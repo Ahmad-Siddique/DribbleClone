@@ -1,6 +1,18 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "../../components/useable/navbar";
+import { Source_Serif_4 } from "next/font/google";
+import { Inter } from "next/font/google";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Footer from "../../components/useable/footer";
+import Navbar1 from "../../components/useable/navbar1";
 
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -9,6 +21,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"], // adjust as needed
 });
 
 export const metadata = {
@@ -20,9 +38,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${inter.variable} antialiased`}
       >
+        {/* <Navbar /> */}
+        <Navbar1 />
+        <div className="h-30" />
         {children}
+        <Footer />
       </body>
     </html>
   );
