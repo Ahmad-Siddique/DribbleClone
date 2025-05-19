@@ -41,19 +41,21 @@ const socialIcons = [
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-[#071C1C] text-white px-12 mt-24">
-      <div className="max-w-[1920px] mx-auto px-6 py-12 md:py-20 flex flex-col gap-10">
+    <footer className="w-full bg-[#071C1C] text-white px-4 sm:px-8 mt-24">
+      <div className="max-w-[1920px] mx-auto px-2 sm:px-6 py-12 md:py-20 flex flex-col gap-10">
         {/* Top Row */}
-        <div className="w-full flex flex-wrap justify-between items-center gap-8">
+        <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-6 md:gap-8">
           {/* Logo */}
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="w-11 h-11 object-contain"
-          />
+          <div className="flex justify-center md:justify-start w-full md:w-auto">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="w-11 h-11 object-contain"
+            />
+          </div>
 
           {/* Navigation */}
-          <nav className="flex flex-wrap gap-6 md:gap-12 items-center justify-center text-sm font-bold">
+          <nav className="flex flex-wrap gap-6 md:gap-12 items-center justify-center text-sm font-bold text-center w-full">
             {[
               "For designers",
               "Hire talent",
@@ -71,7 +73,7 @@ const Footer = () => {
           </nav>
 
           {/* Social Icons */}
-          <div className="flex gap-4 items-center">
+          <div className="flex justify-center md:justify-end gap-4 items-center w-full md:w-auto">
             {socialIcons.map(({ name, href, svg }) => (
               <a
                 key={name}
@@ -88,16 +90,16 @@ const Footer = () => {
         </div>
 
         {/* Bottom Row */}
-        <div className="w-full flex flex-wrap justify-between items-center gap-8 border-t border-white/10 pt-8">
+        <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-t border-white/10 pt-8 text-center">
           {/* Left Links */}
-          <div className="flex flex-wrap gap-4 items-center text-white/60 text-sm font-normal">
+          <div className="flex flex-wrap gap-4 items-center text-white/60 text-sm font-normal justify-center w-full md:w-auto">
             <span>© 2025</span>
             <span>Terms</span>
             <span>Privacy</span>
             <span>Cookies</span>
           </div>
           {/* Right Links */}
-          <div className="flex flex-wrap gap-4 items-center text-white/60 text-sm font-normal">
+          <div className="flex flex-wrap gap-4 items-center text-white/60 text-sm font-normal justify-center w-full md:w-auto">
             <span>Jobs</span>
             <span>Designers</span>
             <span>Freelancers</span>

@@ -132,7 +132,7 @@ const colors = [
 export default function DribbbleFilterBar() {
   const [view, setView] = useState("Popular");
   const [viewDropdown, setViewDropdown] = useState(false);
-  const [category, setCategory] = useState("Discover");
+  const [category, setCategory] = useState();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [tag, setTag] = useState("");
   const [color, setColor] = useState("");
@@ -205,11 +205,13 @@ export default function DribbbleFilterBar() {
             {categories.map((cat) => (
               <li key={cat} className="shrink-0">
                 <button
-                  className={`px-4 py-2 rounded-lg font-medium text-base whitespace-nowrap transition ${
-                    category === cat
-                      ? "bg-gray-100 text-[#DCEFF6]-600"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className={`px-4 py-2 rounded-lg font-medium text-base whitespace-nowrap transition
+            ${
+              category === cat
+                ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
+                : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
+            }
+          `}
                   onClick={() => setCategory(cat)}
                   type="button"
                 >

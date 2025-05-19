@@ -1,8 +1,8 @@
 "use client"
 import Image from "next/image";
 
-// Reusable ShotCard Component
-const ShotCard = ({ shot }) => {
+// Reusable BlogCard Component
+const BlogCard = ({ shot }) => {
   return (
     <div className="relative group rounded-3xl bg-white border border-gray-100 transition-shadow overflow-hidden">
       {/* Whole card clickable */}
@@ -140,4 +140,4 @@ const ShotCard = ({ shot }) => {
   );
 };
 
-export default ShotCard;
+export default BlogCard;

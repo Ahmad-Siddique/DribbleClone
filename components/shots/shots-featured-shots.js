@@ -1,5 +1,6 @@
 import Image from "next/image";
-import ShotCard from "./useable/ShotCard";
+import ShotCard from "../useable/ShotCard";
+
 
 // Example shots data (replace with your real data)
 const shots = [
@@ -18,7 +19,7 @@ const shots = [
     views: "87.8k",
     pro: false,
     team: true,
-    href: "/blog/view/22047902-Dashboard-Web-Builder",
+    href: "/shots/view/22047902-Dashboard-Web-Builder",
   },
   {
     id: 2,
@@ -35,7 +36,7 @@ const shots = [
     views: "53.1k",
     pro: true,
     team: false,
-    href: "/blog/view/20039963-Writing-dashboard-exploration-2",
+    href: "/shots/view/20039963-Writing-dashboard-exploration-2",
   },
   {
     id: 3,
@@ -52,7 +53,7 @@ const shots = [
     views: "91.2k",
     pro: false,
     team: true,
-    href: "/blog/view/22047903-Analytics-Dashboard-UI",
+    href: "/shots/view/22047903-Analytics-Dashboard-UI",
   },
   {
     id: 4,
@@ -69,7 +70,7 @@ const shots = [
     views: "60.0k",
     pro: true,
     team: false,
-    href: "/blog/view/22047904-Fintech-App-Concept",
+    href: "/shots/view/22047904-Fintech-App-Concept",
   },
   {
     id: 5,
@@ -86,7 +87,7 @@ const shots = [
     views: "42.7k",
     pro: false,
     team: true,
-    href: "/blog/view/22047905-Ecommerce-Product-Page",
+    href: "/shots/view/22047905-Ecommerce-Product-Page",
   },
   {
     id: 6,
@@ -103,7 +104,7 @@ const shots = [
     views: "48.3k",
     pro: true,
     team: false,
-    href: "/blog/view/22047906-Crypto-Wallet-UI",
+    href: "/shots/view/22047906-Crypto-Wallet-UI",
   },
   {
     id: 7,
@@ -120,7 +121,7 @@ const shots = [
     views: "77.9k",
     pro: false,
     team: true,
-    href: "/blog/view/22047907-Fitness-App-Dashboard",
+    href: "/shots/view/22047907-Fitness-App-Dashboard",
   },
   {
     id: 8,
@@ -137,7 +138,7 @@ const shots = [
     views: "36.4k",
     pro: true,
     team: false,
-    href: "/blog/view/22047908-Travel-Booking-UI",
+    href: "/shots/view/22047908-Travel-Booking-UI",
   },
   {
     id: 9,
@@ -154,7 +155,7 @@ const shots = [
     views: "58.1k",
     pro: false,
     team: true,
-    href: "/blog/view/22047909-Food-Delivery-App",
+    href: "/shots/view/22047909-Food-Delivery-App",
   },
   {
     id: 10,
@@ -171,7 +172,7 @@ const shots = [
     views: "29.9k",
     pro: true,
     team: false,
-    href: "/blog/view/22047910-Banking-App-UI",
+    href: "/shots/view/22047910-Banking-App-UI",
   },
   {
     id: 11,
@@ -188,7 +189,7 @@ const shots = [
     views: "41.5k",
     pro: false,
     team: true,
-    href: "/blog/view/22047911-Portfolio-Website",
+    href: "/shots/view/22047911-Portfolio-Website",
   },
   {
     id: 12,
@@ -205,10 +206,9 @@ const shots = [
     views: "33.2k",
     pro: true,
     team: false,
-    href: "/blog/view/22047912-Education-Platform-UI",
+    href: "/shots/view/22047912-Education-Platform-UI",
   },
 ];
-  
 
 const icons = {
   like: (
@@ -280,7 +280,7 @@ const icons = {
 };
 
 // Main Component
-export default function TrendingDesigns() {
+export default function ShotsFeaturedShots() {
   return (
     <section className="max-w-[1800px] w-full mx-auto px-2 md:px-8 py-12 font-sans">
       <div className="flex items-baseline justify-between mb-8">
