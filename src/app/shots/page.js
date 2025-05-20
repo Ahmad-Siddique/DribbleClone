@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import DribbbleFilterBar from '../../../components/Filters';
 import TrendingDesigns from '../../../components/featured-shots';
 import LastSection from '../../../components/LastSection';
