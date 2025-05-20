@@ -33,12 +33,13 @@ const deliveryOptions = [
   "1 month",
 ];
 
+// This is the component that will be used in the page
 export default function ServiceFilter() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Modal state
@@ -238,19 +239,18 @@ export default function ServiceFilter() {
         </div>
 
         {/* Category Scroll */}
-        {/* Category Scroll */}
         <div className="w-full flex justify-center overflow-x-auto scrollbar-hide py-2">
           <ul className="flex flex-row gap-2 whitespace-nowrap">
             {categories.map((cat) => (
               <li key={cat} className="shrink-0">
                 <button
                   className={`px-4 py-2 rounded-lg font-medium text-base whitespace-nowrap transition
-            ${
-              category === cat
-                ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
-                : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
-            }
-          `}
+                    ${
+                      category === cat
+                        ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
+                        : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
+                    }
+                  `}
                   onClick={() => setCategory(cat)}
                   type="button"
                 >
