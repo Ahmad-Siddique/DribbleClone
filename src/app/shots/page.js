@@ -8,9 +8,11 @@ import ShotsFeaturedShots from '../../../components/shots/shots-featured-shots';
 const page = () => {
   return (
     <div>
-          <ShotsFilter />
-          <ShotsFeaturedShots />
-          <LastSection />
+      <Suspense fallback={<div>Loading filters...</div>}>
+        <ShotsFilter />
+      </Suspense>
+      <ShotsFeaturedShots />
+      <LastSection />
     </div>
   );
 }
