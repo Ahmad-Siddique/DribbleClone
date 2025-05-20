@@ -10,9 +10,10 @@ const page = () => {
     <div>
       <Suspense fallback={<div>Loading filters...</div>}>
         <ShotsFilter />
+
+        <ShotsFeaturedShots />
+        <LastSection />
       </Suspense>
-      <ShotsFeaturedShots />
-      <LastSection />
     </div>
   );
 }
