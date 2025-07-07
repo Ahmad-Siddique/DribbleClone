@@ -1,19 +1,27 @@
-import React from 'react'
-import MainContent from '../../../../../components/shots/shotsid/MainContent'
-import LastSection from '../../../../../components/LastSection'
-import GetInTouch from '../../../../../components/shots/shotsid/GetInTouch';
+// app/shots/[slug]/page.jsx
 
-const page = () => {
+import ShotsDescription from "../../../../../components/shots/shotsid/ShotsDescription";
+
+export default async function Page({ params }) {
+  const { id } = params;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+
+  let shotData = null;
+
+  try {
+    const res = await fetch(`${baseUrl}/shots/slug/${id}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch shot");
+    shotData = await res.json();
+  } catch (err) {
+    shotData = { success: false, data: null, error: err.message };
+  }
+
   return (
     <div>
-      <MainContent />
-      <h2 className="text-gray-900 text-4xl md:text-6xl font-semibold font-['Source_Serif_4'] mb-8 text-center">
-        More By Zajno
-      </h2>
-          <LastSection />
-          <GetInTouch />
+      <ShotsDescription shot={shotData} />
     </div>
   );
 }
-
-export default page

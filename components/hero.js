@@ -14,7 +14,6 @@ export default function HeroSection() {
     if (searchQuery.trim()) {
       performSearch(searchQuery);
     } else {
-      // Redirect to base page without query params
       switch (searchType) {
         case "shots":
           router.push(`/shots`);
@@ -31,35 +30,48 @@ export default function HeroSection() {
     }
   };
 
-  // Handle trending search click
   const handleTrendingClick = (term) => {
     setSearchQuery(term);
     performSearch(term);
   };
 
-  // Common search function
   const performSearch = (query) => {
     const encodedQuery = encodeURIComponent(query.trim());
-
-    // Redirect based on search type
     switch (searchType) {
       case "shots":
-        router.push(`/shots?tags=${encodedQuery}`);
+        router.push(`/shots?title=${encodedQuery}`);
         break;
       case "service":
-        router.push(`/services?tags=${encodedQuery}`);
+        router.push(`/services?title=${encodedQuery}`);
         break;
       case "blog":
         router.push(`/blog?search=${encodedQuery}`);
         break;
       default:
-        router.push(`/shots?tags=${encodedQuery}`);
+        router.push(`/shots?title=${encodedQuery}`);
     }
   };
 
+  // Dots background style (adjust opacity for each side)
+  const topBottomDotsStyle = {
+    backgroundImage:
+      "radial-gradient(rgba(20,83,45,0.34) 7px, transparent 7px)",
+    backgroundSize: "50px 50px", // increased spacing
+    opacity: 0.35,
+    pointerEvents: "none",
+  };
+  // Left and right (80% fainter)
+  const leftRightDotsStyle = {
+    backgroundImage:
+      "radial-gradient(rgba(20,83,45,0.18) 7px, transparent 7px)",
+    backgroundSize: "50px 50px", // increased spacing
+    opacity: 0.85,
+    pointerEvents: "none",
+  };
+
   return (
-    <section className="bg-white pt-0 pb-12 px-4 md:px-0">
-      <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+    <section className="relative bg-white pt-0 pb-12 px-4 md:px-0 overflow-hidden">
+      <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10">
         <h1
           className="
             max-w-[690px]
@@ -90,38 +102,68 @@ export default function HeroSection() {
           Explore work from the most talented and accomplished designers ready
           to take on your next project
         </p>
-        <form className="w-full max-w-2xl mb-6 mt-5" onSubmit={handleSubmit}>
-          <div className="flex items-center border border-black rounded-xl bg-[#DCEFF6] shadow-none px-2 py-2 h-[56px] sm:h-[64px]">
-            {/* Search Input */}
-            <input
-              type="text"
-              placeholder="Search designers, jobs, inspiration…"
-              className="flex-1 bg-transparent px-3 sm:px-5 py-2 sm:py-3 text-gray-900 text-base focus:outline-none placeholder-black"
-              style={{ height: "38px" }}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {/* Dropdown */}
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              className="bg-transparent rounded-lg text-gray-900 text-base font-medium px-3 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-[#DCEFF6] transition h-10 sm:h-12"
-              style={{ minWidth: 110 }}
-            >
-              <option value="shots">Shots</option>
-              <option value="service">Services</option>
-              <option value="blog">Blogs</option>
-            </select>
-            {/* Search Button */}
-            <button
-              type="submit"
-              className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black hover:bg-gray-800 transition-colors ml-2 cursor-pointer"
-              aria-label="Search"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-            </button>
-          </div>
-        </form>
+
+        {/* Search box with dotted frame */}
+        <div className="relative w-full max-w-2xl mb-6 mt-5 flex justify-center items-center">
+          {/* Top Dots */}
+          <div
+            aria-hidden="true"
+            className="absolute left-0 top-[-24px] w-full h-8 z-0"
+            style={topBottomDotsStyle}
+          />
+          {/* Bottom Dots */}
+          <div
+            aria-hidden="true"
+            className="absolute left-0 bottom-[-24px] w-full h-8 z-0"
+            style={topBottomDotsStyle}
+          />
+          {/* Left Dots */}
+          <div
+            aria-hidden="true"
+            className="absolute left-[-24px] top-0 h-full w-8 z-0"
+            style={leftRightDotsStyle}
+          />
+          {/* Right Dots */}
+          <div
+            aria-hidden="true"
+            className="absolute right-[-24px] top-0 h-full w-8 z-0"
+            style={leftRightDotsStyle}
+          />
+
+          {/* Search Form */}
+          <form className="w-full relative z-10" onSubmit={handleSubmit}>
+            <div className="flex items-center border border-black rounded-xl bg-[#DCEFF6] shadow-none px-2 py-2 h-[56px] sm:h-[64px]">
+              {/* Search Input */}
+              <input
+                type="text"
+                placeholder="Search designers, jobs, inspiration…"
+                className="flex-1 bg-transparent px-3 sm:px-5 py-2 sm:py-3 text-gray-900 text-base focus:outline-none placeholder-black"
+                style={{ height: "38px" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {/* Dropdown */}
+              <select
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
+                className="bg-transparent rounded-lg text-gray-900 text-base font-medium px-3 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-[#DCEFF6] transition h-10 sm:h-12"
+                style={{ minWidth: 110 }}
+              >
+                <option value="shots">Shots</option>
+                <option value="service">Services</option>
+                <option value="blog">Blogs</option>
+              </select>
+              {/* Search Button */}
+              <button
+                type="submit"
+                className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black hover:bg-gray-800 transition-colors ml-2 cursor-pointer"
+                aria-label="Search"
+              >
+                <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              </button>
+            </div>
+          </form>
+        </div>
 
         <div
           className="

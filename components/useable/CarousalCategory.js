@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -60,6 +61,12 @@ const categories = [
 
 export default function CarousalCategory() {
   const swiperRef = useRef(null);
+  const router = useRouter();
+
+  // Handle category click
+  const handleCategoryClick = (categoryTitle) => {
+    router.push(`/shots?category=${encodeURIComponent(categoryTitle)}`);
+  };
 
   // Pause/resume autoplay on mouse enter/leave
   const handleMouseEnter = () => {
@@ -99,7 +106,10 @@ export default function CarousalCategory() {
         >
           {categories.map((cat) => (
             <SwiperSlide key={cat.title}>
-              <div className="flex flex-col group cursor-pointer">
+              <div
+                className="flex flex-col group cursor-pointer"
+                onClick={() => handleCategoryClick(cat.title)}
+              >
                 {/* Changed fixed widths to percentage-based with aspect ratio */}
                 <div className="w-full aspect-[4/3] rounded-lg bg-white flex items-center justify-center overflow-hidden">
                   <img

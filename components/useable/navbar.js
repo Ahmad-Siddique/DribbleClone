@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "./AuthProvider";
 
 export default function DribbbleMenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -9,6 +10,7 @@ export default function DribbbleMenu() {
     Explore: false,
     "Hire a Designer": false,
   });
+  const { user, loading } = useAuth();
 
   // Dropdown menu items
   const exploreItems = [
@@ -127,14 +129,22 @@ export default function DribbbleMenu() {
               )}
             </div>
           </div>
-          {/* Right: Login/Sign Up */}
+          {/* Right: Login/Sign Up or Admin */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            <button className="text-pink-600 font-semibold px-4 py-2 rounded-md hover:bg-pink-50 transition-colors">
-              Login
-            </button>
-            <button className="bg-pink-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-pink-700 transition-colors">
-              Sign Up
-            </button>
+            {loading ? null : user && user.role === "admin" ? (
+              <Link href="/admin" className="text-pink-600 font-semibold px-4 py-2 rounded-md hover:bg-pink-50 transition-colors">
+                Admin
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-pink-600 font-semibold px-4 py-2 rounded-md hover:bg-pink-50 transition-colors">
+                  Login
+                </Link>
+                <Link href="/signup" className="bg-pink-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-pink-700 transition-colors">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
           {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
@@ -227,12 +237,20 @@ export default function DribbbleMenu() {
                 </Link>
               )
             )}
-            <button className="w-full text-left text-pink-600 font-semibold px-3 py-2 rounded-md hover:bg-pink-50 transition-colors">
-              Login
-            </button>
-            <button className="w-full text-left bg-pink-600 text-white font-semibold px-3 py-2 rounded-md hover:bg-pink-700 transition-colors">
-              Sign Up
-            </button>
+            {loading ? null : user && user.role === "admin" ? (
+              <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="w-full text-left text-pink-600 font-semibold px-3 py-2 rounded-md hover:bg-pink-50 transition-colors">
+                Admin
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full text-left text-pink-600 font-semibold px-3 py-2 rounded-md hover:bg-pink-50 transition-colors">
+                  Login
+                </Link>
+                <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="w-full text-left bg-pink-600 text-white font-semibold px-3 py-2 rounded-md hover:bg-pink-700 transition-colors">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

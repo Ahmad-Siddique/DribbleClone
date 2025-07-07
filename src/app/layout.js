@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Footer from "../../components/useable/footer";
 import Navbar1 from "../../components/useable/navbar1";
 import "swiper/css";
+import AuthProvider from "../../components/useable/AuthProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,7 +44,7 @@ export default function RootLayout({ children }) {
         {/* <Navbar /> */}
         <Navbar1 />
         <div className="h-30" />
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         <Footer />
       </body>
     </html>

@@ -19,10 +19,10 @@ const GetInTouch = () => {
       <div className="w-full flex flex-col items-center gap-2.5">
         <div className="flex flex-col items-center gap-1">
           <div className="text-gray-900 text-xl sm:text-2xl font-bold font-['Inter']">
-            Zajno
+            Team Agency
           </div>
           <div className="text-gray-900/50 text-base sm:text-lg font-medium font-['Inter']">
-            Zajno
+            Team Agency
           </div>
         </div>
         <div className="text-center text-gray-700 text-sm sm:text-base font-normal font-['Inter']">

@@ -2,26 +2,53 @@
 import React, { useState } from "react";
 import ServiceModal from "./ServiceModal"; // Ensure this path is correct
 
-const images = [
-  "https://placehold.co/100x100",
-  "https://placehold.co/100x100",
-  "https://placehold.co/100x100?2",
-  "https://placehold.co/100x100?3",
-  "https://placehold.co/100x100?4",
-];
+export default function ServiceDescription({ service }) {
+  // Fallback if no data
+  if (!service?.success || !service?.data) {
+    return (
+      <div className="px-4 py-12 md:px-12 lg:px-24">
+        <div className="bg-slate-50 rounded-2xl p-6 md:p-10 mb-10">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+            Service Not Found
+          </h1>
+        </div>
+      </div>
+    );
+  }
 
-export default function ServiceDescription() {
-  const [selectedImage, setSelectedImage] = useState(images[0]);
+  const s = service.data;
+  const [selectedImage, setSelectedImage] = useState(s.images?.[0] || "");
   const [showModal, setShowModal] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [likes, setLikes] = useState(s.likes || 0);
+  const [liking, setLiking] = useState(false);
+
+  const handleLike = async () => {
+    if (liking) return;
+    setLiking(true);
+    try {
+      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/services/${s._id}/like`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to like the service");
+      const data = await response.json();
+      setLikes(data.likes);
+    } catch (error) {
+      alert("Error liking the service");
+    } finally {
+      setLiking(false);
+    }
+  };
 
   return (
     <div className="px-4 py-12 md:px-12 lg:px-24">
-      {showModal && <ServiceModal onClose={() => setShowModal(false)} />}
+      {showModal && <ServiceModal service={service} onClose={() => setShowModal(false)} />}
 
       <div className="bg-slate-50 rounded-2xl p-6 md:p-10 mb-10">
         <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-          Modernizing the Website of a Shopify Email Customizer
+          {s.title}
         </h1>
         <hr className="border-neutral-200 mb-4" />
         <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
@@ -29,19 +56,28 @@ export default function ServiceDescription() {
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-zinc-100 rounded-full overflow-hidden">
                 <img
-                  src="https://placehold.co/70x91"
-                  alt="Avatar"
+                  src={s.images?.[0] || "https://placehold.co/70x91"}
+                  alt="Service"
                   className="object-cover w-full h-full"
                 />
               </div>
               <div>
-                <div className="text-xl font-bold text-gray-900">Zajno</div>
-                <div className="text-base font-medium text-gray-500">Zajno</div>
+                <div className="text-xl font-bold text-gray-900">
+                  {/* {s.tags?.[0] || "Service"} */}
+                  Team Agency
+                </div>
+                <div className="text-base font-medium text-gray-500">
+                  {s.tags?.[1] || ""}
+                </div>
               </div>
             </div>
           </div>
           <div className="flex gap-4">
-            <button className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-100 cursor-pointer">
+            <button
+              className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+              onClick={handleLike}
+              disabled={liking}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5 text-gray-900"
@@ -56,8 +92,9 @@ export default function ServiceDescription() {
                   d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
                 />
               </svg>
+              <span className="text-gray-900 text-base font-medium">{likes}</span>
             </button>
-            <button className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-100 cursor-pointer">
+            {/* <button className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-100 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5 text-gray-900"
@@ -75,7 +112,7 @@ export default function ServiceDescription() {
             </button>
             <button className="px-4 py-2 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition cursor-pointer">
               Get in touch
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -88,15 +125,15 @@ export default function ServiceDescription() {
               <img
                 src={selectedImage}
                 alt="Main Display"
-                className="w-full object-contain max-h-[320px] md:max-h-[400px]"
+                className="w-full object-contain max-h-[320px] md:max-h-[740px]"
               />
             </div>
           </div>
 
           <div className="flex gap-4 overflow-x-auto scrollbar-hide">
-            {images.slice(1).map((img, index) => (
+            {s.images?.map((img, index) => (
               <button
-                key={index}
+                key={img}
                 className={`w-20 h-20 sm:w-24 sm:h-28 p-1 rounded-xl overflow-hidden border ${
                   selectedImage === img
                     ? "border-[#1BB0CE]"
@@ -117,23 +154,24 @@ export default function ServiceDescription() {
             <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">
               About this Service
             </h2>
-            <p className="text-gray-900 text-base md:text-xl leading-relaxed mb-4">
-              UpOrder works with Shopify email notifications, helping merchants
-              turn routine messages into a tool for increasing repeat purchases
-              and reinforcing their brand identity...
-            </p>
+            <div
+              className="text-gray-900 text-base md:text-xl leading-relaxed mb-4"
+              dangerouslySetInnerHTML={{ __html: s.description }}
+            />
           </div>
         </div>
 
         {/* Right: Pricing and actions */}
         <div className="w-full lg:w-[571px] flex flex-col gap-10">
           <div className="bg-slate-50 p-6 md:p-10 rounded-2xl">
-            <div className="text-3xl font-bold text-gray-900 mb-4">$3,000</div>
+            <div className="text-3xl font-bold text-gray-900 mb-4">
+              ${s.price}
+            </div>
             <p className="text-gray-900 text-xl">
-              <strong>Concepts and revisions:</strong> 2 concepts, 3 revisions
+              <strong>Concepts and revisions:</strong> {s.conceptsAndRevisions}
             </p>
             <p className="text-gray-900 text-xl">
-              <strong>Project Duration:</strong> 3 weeks
+              <strong>Project Duration:</strong> {s.projectDuration}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <button
@@ -163,7 +201,10 @@ export default function ServiceDescription() {
                         Project Cost
                       </span>
                       <span className="text-gray-900 text-base md:text-xl font-bold font-['Inter']">
-                        $3,000.00
+                        $
+                        {s.price?.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                        })}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -187,7 +228,10 @@ export default function ServiceDescription() {
                         Project Total
                       </span>
                       <span className="text-gray-900 text-base md:text-xl font-bold font-['Inter']">
-                        $3,172.20
+                        $
+                        {(s.price + 82.5 + 89.7).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                        })}
                       </span>
                     </div>
                   </div>

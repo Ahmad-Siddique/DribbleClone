@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const CustomProjectForm = () => {
   // Form state
   const [formData, setFormData] = useState({
@@ -16,6 +18,11 @@ const CustomProjectForm = () => {
     otherServices: "",
     allowContact: false,
   });
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Handle input changes
   const handleChange = (e) => {
@@ -67,11 +74,59 @@ const CustomProjectForm = () => {
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email address.";
+    if (!formData.projectDescription.trim() || formData.projectDescription.length < 20)
+      newErrors.projectDescription = "Project description must be at least 20 characters.";
+    if (formData.designCategories.length === 0)
+      newErrors.designCategories = "Select at least one design category.";
+    if (formData.designCategories.length > 3)
+      newErrors.designCategories = "You can select up to 3 categories.";
+    if (!formData.timeframe) newErrors.timeframe = "Timeframe is required.";
+    if (!formData.budget) newErrors.budget = "Budget is required.";
+    else if (formData.budget === "$5,000 - $10,000" || formData.budget === "$10,000 - $20,000" || formData.budget === "$20,000 - $50,000" || formData.budget === "$50,000+") {
+      // All options are valid, but you can add more logic if needed
+    } else {
+      newErrors.budget = "Select a valid budget.";
+    }
+    return newErrors;
+  };
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Add your form submission logic here
+    setSubmitError("");
+    setSubmitSuccess(false);
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      setSubmitSuccess(true);
+      setFormData({
+        name: "",
+        email: "",
+        projectDescription: "",
+        designCategories: [],
+        timeframe: "",
+        budget: "",
+        businessName: "",
+        businessWebsite: "",
+        additionalServices: [],
+        otherServices: "",
+        allowContact: false,
+      });
+      setErrors({});
+    } catch (err) {
+      setSubmitError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Design categories
@@ -176,6 +231,13 @@ const CustomProjectForm = () => {
             Tell us about your project
           </h2>
 
+          {submitError && (
+            <div className="mb-4 text-red-600 text-sm">{submitError}</div>
+          )}
+          {submitSuccess && (
+            <div className="mb-4 text-green-600 text-sm">Your project was submitted successfully!</div>
+          )}
+
           {/* Name Field */}
           <div className="mb-6">
             <label className="block text-slate-950 text-sm font-normal font-['Inter'] mb-2">
@@ -190,6 +252,7 @@ const CustomProjectForm = () => {
               className="w-full h-10 p-3 bg-white rounded-[10px] border border-zinc-500/10 text-sm focus:outline-none focus:border-gray-400"
               required
             />
+            {errors.name && <div className="text-red-600 text-xs mt-1">{errors.name}</div>}
           </div>
 
           {/* Email Field */}
@@ -215,6 +278,7 @@ const CustomProjectForm = () => {
               className="w-full h-10 p-3 bg-white rounded-[10px] border border-zinc-500/10 text-sm focus:outline-none focus:border-gray-400"
               required
             />
+            {errors.email && <div className="text-red-600 text-xs mt-1">{errors.email}</div>}
           </div>
 
           {/* Project Description */}
@@ -230,6 +294,7 @@ const CustomProjectForm = () => {
               className="w-full min-h-28 p-3 bg-white rounded-[10px] border border-zinc-500/10 text-sm focus:outline-none focus:border-gray-400"
               required
             />
+            {errors.projectDescription && <div className="text-red-600 text-xs mt-1">{errors.projectDescription}</div>}
           </div>
 
           {/* Design Categories */}
@@ -260,6 +325,7 @@ const CustomProjectForm = () => {
                 </label>
               ))}
             </div>
+            {errors.designCategories && <div className="text-red-600 text-xs mt-1">{errors.designCategories}</div>}
           </div>
 
           {/* Timeframe Field */}
@@ -303,6 +369,7 @@ const CustomProjectForm = () => {
                 </svg>
               </div>
             </div>
+            {errors.timeframe && <div className="text-red-600 text-xs mt-1">{errors.timeframe}</div>}
           </div>
 
           {/* Budget Field */}
@@ -346,6 +413,7 @@ const CustomProjectForm = () => {
                 </svg>
               </div>
             </div>
+            {errors.budget && <div className="text-red-600 text-xs mt-1">{errors.budget}</div>}
             <p className="text-slate-950 text-xs font-normal font-['Inter'] mt-2">
               <span className="text-red-600">*</span> Project matching requires
               a <strong>minimum budget of $5,000 USD.</strong> For projects
@@ -446,9 +514,20 @@ const CustomProjectForm = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-10 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-semibold font-['Inter'] rounded-[30px] transition-colors"
+            className="w-full h-10 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-semibold font-['Inter'] rounded-[30px] transition-colors flex items-center justify-center"
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? (
+              <span>
+                <svg className="animate-spin h-5 w-5 mr-2 inline-block text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                Submitting...
+              </span>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       </div>

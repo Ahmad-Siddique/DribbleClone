@@ -24,15 +24,6 @@ const tags = [
   "Web Design",
 ];
 
-const deliveryOptions = [
-  "Any",
-  "1 day",
-  "3 days",
-  "1 week",
-  "2 weeks",
-  "1 month",
-];
-
 export default function ShotsFilter() {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,22 +31,82 @@ export default function ShotsFilter() {
 
   const [view, setView] = useState("Popular");
   const [viewDropdown, setViewDropdown] = useState(false);
-  const [category, setCategory] = useState();
+  const [selectedCategories, setSelectedCategories] = useState(
+    searchParams.get("category")?.split(",")?.filter(Boolean) || []
+  );
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Modal state
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [deliveryTime, setDeliveryTime] = useState("Any");
+  const [selectedTags, setSelectedTags] = useState(
+    searchParams.get("tags")?.split(",")?.filter(Boolean) || []
+  );
 
   const [isPending, startTransition] = useTransition();
 
-  // Toggle tag selection
+  // Toggle tag selection and navigate to /shots
   const toggleTag = (tag) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    startTransition(() => {
+      const newTags = selectedTags.includes(tag)
+        ? selectedTags.filter((t) => t !== tag)
+        : [...selectedTags, tag];
+
+      setSelectedTags(newTags);
+
+      const params = new URLSearchParams();
+
+      // Add tags
+      if (newTags.length > 0) {
+        params.set("tags", newTags.join(","));
+      }
+
+      // Add categories separately
+      if (selectedCategories.length > 0) {
+        params.set("category", selectedCategories.join(","));
+      }
+
+      // Add view
+      if (view && view !== "Popular") {
+        params.set("view", view);
+      }
+
+      const queryString = params.toString();
+      const targetUrl = queryString ? `/shots?${queryString}` : "/shots";
+
+      router.push(targetUrl);
+    });
+  };
+
+  // Toggle category selection and navigate to /shots
+  const toggleCategory = (cat) => {
+    startTransition(() => {
+      const newCategories = selectedCategories.includes(cat)
+        ? selectedCategories.filter((c) => c !== cat)
+        : [...selectedCategories, cat];
+
+      setSelectedCategories(newCategories);
+
+      const params = new URLSearchParams();
+
+      // Add tags
+      if (selectedTags.length > 0) {
+        params.set("tags", selectedTags.join(","));
+      }
+
+      // Add categories separately
+      if (newCategories.length > 0) {
+        params.set("category", newCategories.join(","));
+      }
+
+      // Add view
+      if (view && view !== "Popular") {
+        params.set("view", view);
+      }
+
+      const queryString = params.toString();
+      const targetUrl = queryString ? `/shots?${queryString}` : "/shots";
+
+      router.push(targetUrl);
+    });
   };
 
   // Modal component
@@ -119,89 +170,13 @@ export default function ShotsFilter() {
               </button>
             ))}
           </div>
-          {/* Price */}
-          <div className="w-full flex flex-col gap-3">
-            <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
-              Price
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
-              <div className="flex-1 flex flex-col gap-2.5">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Min"
-                  className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-2.5">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Max"
-                  className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-          {/* Delivery Time */}
-          <div className="w-full flex flex-col gap-3">
-            <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
-              Delivery time
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
-              <select
-                className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                value={deliveryTime}
-                onChange={(e) => setDeliveryTime(e.target.value)}
-              >
-                {deliveryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
           {/* Apply Filter Button */}
           <button
             disabled={isPending}
-            onClick={() => {
-              startTransition(() => {
-                const params = new URLSearchParams(searchParams.toString());
-                // Tags as comma separated
-                if (selectedTags.length > 0) {
-                  params.set("tags", selectedTags.join(","));
-                } else {
-                  params.delete("tags");
-                }
-                // Min/Max price
-                if (minPrice) {
-                  params.set("minPrice", minPrice);
-                } else {
-                  params.delete("minPrice");
-                }
-                if (maxPrice) {
-                  params.set("maxPrice", maxPrice);
-                } else {
-                  params.delete("maxPrice");
-                }
-                // Delivery time
-                if (deliveryTime && deliveryTime !== "Any") {
-                  params.set("deliveryTime", deliveryTime);
-                } else {
-                  params.delete("deliveryTime");
-                }
-                router.push(`${pathname}?${params.toString()}`);
-                onClose();
-              });
-            }}
+            onClick={onClose}
             className="w-full max-w-xs mx-auto px-8 py-4 bg-gray-900 rounded-[20px] flex justify-center items-center text-white text-lg sm:text-xl font-bold font-['Inter'] leading-tight transition hover:bg-gray-800 disabled:opacity-50"
           >
-            {isPending ? "Applying..." : "Apply filter"}
+            {isPending ? "Applying..." : "Close"}
           </button>
         </div>
       </div>
@@ -272,20 +247,19 @@ export default function ShotsFilter() {
         </div>
 
         {/* Category Scroll */}
-        {/* Category Scroll */}
         <div className="w-full flex justify-center overflow-x-auto scrollbar-hide py-2">
           <ul className="flex flex-row gap-2 whitespace-nowrap">
             {categories.map((cat) => (
               <li key={cat} className="shrink-0">
                 <button
                   className={`px-4 py-2 rounded-lg font-medium text-base whitespace-nowrap transition
-            ${
-              category === cat
-                ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
-                : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
-            }
-          `}
-                  onClick={() => setCategory(cat)}
+                    ${
+                      selectedCategories.includes(cat)
+                        ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
+                        : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
+                    }
+                  `}
+                  onClick={() => toggleCategory(cat)}
                   type="button"
                 >
                   {cat}

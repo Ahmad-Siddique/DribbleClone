@@ -30,7 +30,11 @@ const AddService = () => {
   const [price, setPrice] = useState("");
   const [concepts, setConcepts] = useState("");
   const [duration, setDuration] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Handle tag input
   const handleTagKeyDown = (e) => {
@@ -87,15 +91,15 @@ const AddService = () => {
     }
   };
 
-  // Process multiple files
+  // Process multiple files (max 5)
   const handleFiles = (files) => {
     const imageFiles = files.filter(
       (file) => file.type.startsWith("image/") || file.type === "video/mp4"
     );
-
     if (imageFiles.length === 0) return;
-
-    const newImagesPromises = imageFiles.map((file) => {
+    const newFiles = imageFiles.slice(0, 5 - uploadedImages.length);
+    if (uploadedImages.length + newFiles.length > 5) return;
+    const newImagesPromises = newFiles.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -103,12 +107,12 @@ const AddService = () => {
             src: reader.result,
             type: file.type,
             name: file.name,
+            file, // Keep original file for upload
           });
         };
         reader.readAsDataURL(file);
       });
     });
-
     Promise.all(newImagesPromises).then((newImages) => {
       setUploadedImages((prevImages) => [...prevImages, ...newImages]);
     });
@@ -119,6 +123,71 @@ const AddService = () => {
     setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
+  // --- API INTEGRATION ---
+  const validate = () => {
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = "Title is required.";
+    if (!price.trim() || isNaN(price) || Number(price) <= 0) newErrors.price = "Enter a valid price.";
+    if (!concepts.trim()) newErrors.concepts = "Concepts and revisions info is required.";
+    if (!duration.trim()) newErrors.duration = "Project duration is required.";
+    if (!description || description.replace(/<(.|\n)*?>/g, '').trim().length < 10)
+      newErrors.description = "Description must be at least 10 characters.";
+    if (uploadedImages.length === 0) newErrors.images = "At least one image is required.";
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError("");
+    setSubmitSuccess(false);
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+    if (submitting) return;
+    setSubmitting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      tags.forEach((tag) => formData.append("tags[]", tag));
+      formData.append("price", price);
+      formData.append("conceptsAndRevisions", concepts);
+      formData.append("projectDuration", duration);
+      formData.append("description", description);
+      uploadedImages.slice(0, 5).forEach((img) => {
+        if (img.file) formData.append("images", img.file);
+      });
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/services`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to submit service");
+      }
+
+      setSubmitSuccess(true);
+      setTitle("");
+      setTags([]);
+      setTagInput("");
+      setDescription("");
+      setUploadedImages([]);
+      setPrice("");
+      setConcepts("");
+      setDuration("");
+      setErrors({});
+    } catch (err) {
+      setSubmitError("Error: " + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="w-full flex justify-center px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-12 md:py-16 lg:py-24">
       <div className="w-full max-w-7xl flex flex-col items-center gap-8 sm:gap-12 md:gap-16 lg:gap-20">
@@ -126,7 +195,16 @@ const AddService = () => {
           What services you provide?
         </h1>
 
-        <div className="w-full p-4 sm:p-6 md:p-8 lg:p-12 rounded-[40px] outline outline-1 outline-offset-[-1px] outline-zinc-400 flex flex-col justify-start items-end gap-8 sm:gap-12 md:gap-16 lg:gap-20">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full p-4 sm:p-6 md:p-8 lg:p-12 rounded-[40px] outline outline-1 outline-offset-[-1px] outline-zinc-400 flex flex-col justify-start items-end gap-8 sm:gap-12 md:gap-16 lg:gap-20"
+        >
+          {submitError && (
+            <div className="mb-4 text-red-600 text-sm">{submitError}</div>
+          )}
+          {submitSuccess && (
+            <div className="mb-4 text-green-600 text-sm">Service submitted successfully!</div>
+          )}
           {/* Multiple Image Upload Area */}
           <div className="w-full flex flex-col gap-2.5">
             <div className="w-full p-2.5 rounded-[10px] outline outline-1 outline-offset-[-1px] outline-gray-900 flex flex-col gap-2.5">
@@ -158,6 +236,7 @@ const AddService = () => {
                             />
                           )}
                           <button
+                            type="button"
                             onClick={() => removeImage(index)}
                             className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md opacity-70 hover:opacity-100 transition"
                           >
@@ -168,17 +247,23 @@ const AddService = () => {
                     </div>
                     <div className="flex justify-center gap-4">
                       <button
+                        type="button"
                         onClick={() => fileInputRef.current.click()}
                         className="px-4 py-2 bg-gray-900 text-white rounded-lg"
+                        disabled={uploadedImages.length >= 5}
                       >
                         Add More
                       </button>
                       <button
+                        type="button"
                         onClick={() => setUploadedImages([])}
                         className="px-4 py-2 border border-gray-900 rounded-lg"
                       >
                         Remove All
                       </button>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-2">
+                      {uploadedImages.length}/5 images selected
                     </div>
                   </div>
                 ) : (
@@ -233,6 +318,7 @@ const AddService = () => {
                     </div>
                   </>
                 )}
+                {errors.images && <div className="text-red-600 text-xs mt-1">{errors.images}</div>}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -240,6 +326,7 @@ const AddService = () => {
                   className="hidden"
                   onChange={handleFileChange}
                   multiple
+                  disabled={uploadedImages.length >= 5}
                 />
               </div>
             </div>
@@ -258,8 +345,10 @@ const AddService = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full bg-transparent text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] placeholder-zinc-700 focus:outline-none"
+                    required
                   />
                 </div>
+                {errors.title && <div className="text-red-600 text-xs mt-1">{errors.title}</div>}
               </div>
 
               {/* Tags Field */}
@@ -312,8 +401,10 @@ const AddService = () => {
                     className="w-full bg-transparent text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] placeholder-zinc-700 focus:outline-none"
                     min="0"
                     step="0.01"
+                    required
                   />
                 </div>
+                {errors.price && <div className="text-red-600 text-xs mt-1">{errors.price}</div>}
               </div>
 
               {/* Concepts and Revisions Field */}
@@ -328,8 +419,10 @@ const AddService = () => {
                     value={concepts}
                     onChange={(e) => setConcepts(e.target.value)}
                     className="w-full bg-transparent text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] placeholder-zinc-700 focus:outline-none"
+                    required
                   />
                 </div>
+                {errors.concepts && <div className="text-red-600 text-xs mt-1">{errors.concepts}</div>}
               </div>
 
               {/* Project Duration Field */}
@@ -344,8 +437,10 @@ const AddService = () => {
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
                     className="w-full bg-transparent text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] placeholder-zinc-700 focus:outline-none"
+                    required
                   />
                 </div>
+                {errors.duration && <div className="text-red-600 text-xs mt-1">{errors.duration}</div>}
               </div>
             </div>
 
@@ -374,32 +469,41 @@ const AddService = () => {
                     />
                   )}
                 </div>
+                {errors.description && <div className="text-red-600 text-xs mt-1">{errors.description}</div>}
               </div>
             </div>
           </div>
 
           {/* Add More Button */}
-          <div className="flex items-center gap-2.5">
+          {/* <div className="flex items-center gap-2.5">
             <div className="p-5 bg-gray-900 rounded-[200px] flex items-center cursor-pointer">
               <PlusIcon className="w-6 h-6 text-white" />
             </div>
+          </div> */}
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 md:gap-16 lg:gap-20 w-full">
+            {/* <button
+              type="button"
+              className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center"
+              disabled={submitting}
+            >
+              <span className="text-center text-gray-900 text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
+                Save as draft
+              </span>
+            </button> */}
+
+            <button
+              type="submit"
+              className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 bg-gray-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center cursor-pointer"
+              disabled={submitting}
+            >
+              <span className="text-center text-white text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
+                {submitting ? "Submitting..." : "Submit"}
+              </span>
+            </button>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 md:gap-16 lg:gap-20">
-          <button className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center">
-            <span className="text-center text-gray-900 text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
-              Save as draft
-            </span>
-          </button>
-
-          <button className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 bg-gray-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center cursor-pointer">
-            <span className="text-center text-white text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
-              Continue
-            </span>
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   );

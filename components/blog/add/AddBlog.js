@@ -18,7 +18,6 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
   ),
 });
 
-// Categories for the select field
 const categories = [
   "Branding",
   "Product Design",
@@ -45,8 +44,12 @@ const AddBlog = () => {
   const [description, setDescription] = useState("");
   const [uploadedImage, setUploadedImage] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-  const [category, setCategory] = useState(""); // New state for category
+  const [category, setCategory] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Handle tag input
   const handleTagKeyDown = (e) => {
@@ -107,16 +110,73 @@ const AddBlog = () => {
 
   // Process the file
   const handleFile = (file) => {
-    if (file.type.startsWith("image/") || file.type === "video/mp4") {
+    if (file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
         setUploadedImage({
           src: reader.result,
           type: file.type,
           name: file.name,
+          file,
         });
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = "Title is required.";
+    if (!category.trim()) newErrors.category = "Category is required.";
+    if (!description || description.replace(/<(.|\n)*?>/g, '').trim().length < 20)
+      newErrors.description = "Description must be at least 20 characters.";
+    if (!uploadedImage) newErrors.image = "Image is required.";
+    return newErrors;
+  };
+
+  // --- API INTEGRATION ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError("");
+    setSubmitSuccess(false);
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+    if (submitting) return;
+    setSubmitting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      tags.forEach((tag) => formData.append("tags[]", tag));
+      formData.append("category", category);
+      formData.append("description", description);
+      if (uploadedImage && uploadedImage.file) {
+        formData.append("image", uploadedImage.file);
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit blog");
+      }
+
+      setSubmitSuccess(true);
+      setTitle("");
+      setTags([]);
+      setTagInput("");
+      setCategory("");
+      setDescription("");
+      setUploadedImage(null);
+      setErrors({});
+    } catch (err) {
+      setSubmitError("Error: " + err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -127,7 +187,17 @@ const AddBlog = () => {
           What have you been working on?
         </h1>
 
-        <div className="w-full p-4 sm:p-6 md:p-8 lg:p-12 rounded-[40px] outline outline-1 outline-offset-[-1px] outline-zinc-400 flex flex-col justify-start items-end gap-8 sm:gap-12 md:gap-16 lg:gap-20">
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="w-full p-4 sm:p-6 md:p-8 lg:p-12 rounded-[40px] outline outline-1 outline-offset-[-1px] outline-zinc-400 flex flex-col justify-start items-end gap-8 sm:gap-12 md:gap-16 lg:gap-20"
+        >
+          {submitError && (
+            <div className="mb-4 text-red-600 text-sm">{submitError}</div>
+          )}
+          {submitSuccess && (
+            <div className="mb-4 text-green-600 text-sm">Blog submitted successfully!</div>
+          )}
           {/* Image Upload Area */}
           <div className="w-full flex flex-col gap-2.5">
             <div className="w-full p-2.5 rounded-[10px] outline outline-1 outline-offset-[-1px] outline-gray-900 flex flex-col gap-2.5">
@@ -142,27 +212,21 @@ const AddBlog = () => {
               >
                 {uploadedImage ? (
                   <div className="flex flex-col items-center gap-4">
-                    {uploadedImage.type.startsWith("image/") ? (
-                      <img
-                        src={uploadedImage.src}
-                        alt="Uploaded"
-                        className="max-w-full max-h-[300px] rounded-lg object-contain"
-                      />
-                    ) : (
-                      <video
-                        src={uploadedImage.src}
-                        controls
-                        className="max-w-full max-h-[300px] rounded-lg"
-                      />
-                    )}
+                    <img
+                      src={uploadedImage.src}
+                      alt="Uploaded"
+                      className="max-w-full max-h-[300px] rounded-lg object-contain"
+                    />
                     <div className="flex gap-4">
                       <button
+                        type="button"
                         onClick={() => fileInputRef.current.click()}
                         className="px-4 py-2 bg-gray-900 text-white rounded-lg"
                       >
-                        Change
+                        Change Image
                       </button>
                       <button
+                        type="button"
                         onClick={() => setUploadedImage(null)}
                         className="px-4 py-2 border border-gray-900 rounded-lg"
                       >
@@ -172,8 +236,11 @@ const AddBlog = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="p-4 bg-gray-900 rounded-[200px] flex justify-center items-center">
-                      <ArrowUpTrayIcon className="w-6 h-6 text-white" />
+                    <div className="p-4 bg-gray-900 rounded-[200px] flex justify-center items-center cursor-pointer">
+                      <ArrowUpTrayIcon
+                        className="w-6 h-6 text-white"
+                        onClick={() => fileInputRef.current.click()}
+                      />
                     </div>
 
                     <div className="w-full flex flex-col gap-4 text-center">
@@ -205,7 +272,6 @@ const AddBlog = () => {
                           Videos (mp4)
                         </div>
                       </div>
-
                       <div className="flex flex-col gap-6 sm:gap-10">
                         <div className="flex items-center gap-2 text-zinc-700 text-sm sm:text-base font-normal font-['Inter']">
                           <PhotoIcon className="w-5 h-5 text-zinc-700" />
@@ -222,54 +288,48 @@ const AddBlog = () => {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*,video/mp4"
+                  accept="image/*"
                   className="hidden"
                   onChange={handleFileChange}
                 />
               </div>
+              {errors.image && <div className="text-red-600 text-xs mt-1">{errors.image}</div>}
             </div>
           </div>
 
           {/* Form Fields */}
           <div className="w-full flex flex-col gap-10">
             {/* Title and Category Row */}
-            {/* Title and Category Row */}
             <div className="w-full flex flex-col sm:flex-row gap-6 sm:gap-10 sm:items-end">
               {/* Title Field */}
               <div className="w-full flex-1 flex flex-col gap-2.5">
-                <label className="text-gray-900 text-base sm:text-lg font-medium font-['Inter']">
-                  Title
-                </label>
-                <div className="w-full p-5 bg-emerald-50/30 rounded-[20px] outline outline-1 outline-offset-[-1px] outline-gray-900/20 flex items-center">
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full bg-transparent text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] placeholder-zinc-700 focus:outline-none"
-                  />
-                </div>
+                <label className="text-gray-900 text-base font-semibold">Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
+                  placeholder="Enter blog title"
+                />
+                {errors.title && <div className="text-red-600 text-xs mt-1">{errors.title}</div>}
               </div>
 
-              {/* Category Select Field */}
+              {/* Category Field */}
               <div className="w-full flex-1 flex flex-col gap-2.5">
-                <label className="text-gray-900 text-base sm:text-lg font-medium font-['Inter']">
-                  Category
-                </label>
+                <label className="text-gray-900 text-base font-semibold">Category</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full p-5 bg-emerald-50/30 rounded-[20px] outline outline-1 outline-offset-[-1px] outline-gray-900/20 text-zinc-700 text-base sm:text-lg font-normal font-['Inter'] cursor-pointer focus:outline-none"
+                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
                 >
-                  <option value="" disabled>
-                    Select a category
-                  </option>
+                  <option value="">Select category</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
                     </option>
                   ))}
                 </select>
+                {errors.category && <div className="text-red-600 text-xs mt-1">{errors.category}</div>}
               </div>
             </div>
 
@@ -306,57 +366,48 @@ const AddBlog = () => {
               </div>
             </div>
 
-            {/* Description Field with Rich Text Editor */}
+            {/* Description Field */}
             <div className="w-full flex flex-col gap-2.5">
-              <div>
-                <span className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter'] leading-snug">
-                  Description{" "}
-                </span>
-                <span className="text-rose-500 text-lg sm:text-xl font-medium font-['Inter'] leading-snug">
-                  *
-                </span>
-              </div>
-
-              <div className="w-full p-0.5 rounded-lg outline outline-2 outline-offset-[-2px] outline-gray-200 flex flex-col">
-                {/* Rich Text Editor */}
-                <div className="quill-wrapper" style={{ height: "300px" }}>
-                  {typeof window !== "undefined" && (
-                    <ReactQuill
-                      theme="snow"
-                      value={description}
-                      onChange={setDescription}
-                      modules={modules}
-                      className="bg-gray-50 rounded-bl-lg rounded-br-lg h-full"
-                      placeholder="Tell us about your work..."
-                    />
-                  )}
-                </div>
-              </div>
+              <label className="text-gray-900 text-base font-semibold">Description</label>
+              <ReactQuill
+                value={description}
+                onChange={setDescription}
+                modules={modules}
+                className="bg-white rounded-lg border border-gray-300"
+              />
+              {errors.description && <div className="text-red-600 text-xs mt-1">{errors.description}</div>}
             </div>
           </div>
 
           {/* Add More Button */}
-          <div className="flex items-center gap-2.5">
+          {/* <div className="flex items-center gap-2.5">
             <div className="p-5 bg-gray-900 rounded-[200px] flex items-center cursor-pointer">
               <PlusIcon className="w-6 h-6 text-white" />
             </div>
+          </div> */}
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 md:gap-16 lg:gap-20">
+            {/* <button
+              type="button"
+              className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center"
+            >
+              <span className="text-center text-gray-900 text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
+                Save as draft
+              </span>
+            </button> */}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 bg-gray-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center cursor-pointer"
+            >
+              <span className="text-center text-white text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
+                {submitting ? "Submitting..." : "Submit"}
+              </span>
+            </button>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 md:gap-16 lg:gap-20">
-          <button className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center">
-            <span className="text-center text-gray-900 text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
-              Save as draft
-            </span>
-          </button>
-
-          <button className="px-6 sm:px-8 md:px-10 py-4 sm:py-5 bg-gray-900 rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-900 flex justify-center items-center cursor-pointer">
-            <span className="text-center text-white text-lg sm:text-xl font-bold font-['Arial'] leading-normal">
-              Continue
-            </span>
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   );

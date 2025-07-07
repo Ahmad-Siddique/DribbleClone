@@ -1,17 +1,65 @@
-"use client"
+"use client";
 import Image from "next/image";
+import { useState } from "react";
 
 // Reusable ShotCard Component
-const ShotCard = ({ shot }) => {
+const ShotCard = ({ shot, type }) => {
+  const [likes, setLikes] = useState(shot.likes);
+
+  const handleLike = async () => {
+    let endpoint;
+    switch (type) {
+      case "services":
+        endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/services/${shot.id}/like`;
+        break;
+      case "shots":
+        endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/shots/${shot.id}/like`;
+        break;
+      case "blog":
+        endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/${shot.id}/like`;
+        break;
+      default:
+        console.error("Invalid shot type:", type);
+        alert("Error: Invalid shot type");
+        return;
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like the shot");
+      }
+
+      const data = await response.json();
+      setLikes(data.likes); // Update like count from API response
+      // alert("Liked!");
+    } catch (error) {
+      console.error("Error liking shot:", error);
+      alert("Error liking the shot");
+    }
+  };
+
   return (
     <div className="relative group rounded-3xl bg-white border border-gray-100 transition-shadow overflow-hidden">
       {/* Whole card clickable */}
       <a
         href={shot.href}
-        className="absolute inset-0 z-30"
+        className="absolute inset-0 z-10"
         aria-label={`View ${shot.title}`}
         tabIndex={0}
         style={{ pointerEvents: "auto" }}
+        onClick={(e) => {
+          // Ensure navigation occurs for card clicks
+          if (!e.target.closest(".no-navigate")) {
+            window.location.href = shot.href; // Force navigation
+          }
+        }}
       ></a>
 
       {/* Shot Image */}
@@ -25,19 +73,44 @@ const ShotCard = ({ shot }) => {
           priority
         />
         {/* Hover Overlay */}
-        <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 to-transparent z-20">
+        <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 to-transparent z-20 pointer-events-none">
           <div className="w-full flex items-center justify-between px-5 pb-4">
             <span className="text-white text-base md:text-lg font-semibold drop-shadow">
               {shot.title}
             </span>
             {/* Button container is above the link */}
-            <div className="flex gap-3 relative z-40">
+            <div className="flex gap-3 relative z-30">
               <button
                 type="button"
-                className="bg-white/90 hover:bg-white text-gray-700 rounded-full p-2 shadow transition flex items-center justify-center"
+                className="bg-white/90 hover:bg-white text-pink-600 rounded-full p-2 shadow transition flex items-center justify-center pointer-events-auto no-navigate"
                 tabIndex={0}
-                onClick={(e) => e.stopPropagation()}
-                style={{ pointerEvents: "auto" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleLike();
+                }}
+              >
+                <svg
+                  viewBox="0 0 16 16"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                >
+                  <path d="M8 14s-5.5-3.3-5.5-7.2C2.5 4.3 4.2 2.5 6.2 2.5c1.1 0 2.1.6 2.8 1.6C9.7 3.1 10.7 2.5 11.8 2.5c2 0 3.7 1.8 3.7 4.3C13.5 10.7 8 14 8 14z" />
+                </svg>
+              </button>
+              {/* Save button for bookmarking content */}
+              {/* <button
+                type="button"
+                className="bg-white/90 hover:bg-white text-gray-700 rounded-full p-2 shadow transition flex items-center justify-center pointer-events-auto"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  alert("Saved!");
+                }}
               >
                 <svg
                   viewBox="0 0 16 16"
@@ -54,32 +127,14 @@ const ShotCard = ({ shot }) => {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </button>
-              <button
-                type="button"
-                className="bg-white/90 hover:bg-white text-pink-600 rounded-full p-2 shadow transition flex items-center justify-center"
-                tabIndex={0}
-                onClick={(e) => e.stopPropagation()}
-                style={{ pointerEvents: "auto" }}
-              >
-                <svg
-                  viewBox="0 0 16 16"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                >
-                  <path d="M8 14s-5.5-3.3-5.5-7.2C2.5 4.3 4.2 2.5 6.2 2.5c1.1 0 2.1.6 2.8 1.6C9.7 3.1 10.7 2.5 11.8 2.5c2 0 3.7 1.8 3.7 4.3C13.5 10.7 8 14 8 14z" />
-                </svg>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
       </div>
 
       {/* Shot Details */}
-      <div className="flex items-center gap-4 px-5 pt-3 pb-4">
+      <div className="relative z-20 flex items-center gap-4 px-5 pt-3 pb-4">
         <Image
           src={shot.user.avatar}
           alt={shot.user.name}
@@ -115,7 +170,7 @@ const ShotCard = ({ shot }) => {
               >
                 <path d="M8 14s-5.5-3.3-5.5-7.2C2.5 4.3 4.2 2.5 6.2 2.5c1.1 0 2.1.6 2.8 1.6C9.7 3.1 10.7 2.5 11.8 2.5c2 0 3.7 1.8 3.7 4.3C13.5 10.7 8 14 8 14z" />
               </svg>
-              {shot.likes}
+              {likes}
             </span>
             <span className="flex items-center gap-1 text-gray-500 text-xs">
               <svg

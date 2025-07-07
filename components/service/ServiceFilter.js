@@ -33,13 +33,21 @@ const deliveryOptions = [
   "1 month",
 ];
 
-// This is the component that will be used in the page
+
+
+
+
+
+
+
+
+
 export default function ServiceFilter() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [category, setCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Modal state
@@ -57,156 +65,168 @@ export default function ServiceFilter() {
     );
   };
 
-  // Modal component
-  const FilterModal = ({ onClose }) => (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto m-4">
-        <div className="w-full bg-white rounded-[10px] flex flex-col justify-center items-start gap-10 overflow-hidden p-4 sm:p-8 md:p-10">
-          {/* Modal Header */}
-          <div className="w-full p-4 sm:p-5 bg-slate-50 rounded-[20px] flex justify-between items-center gap-4">
-            <div className="text-gray-900 text-2xl sm:text-3xl md:text-4xl font-bold font-['Inter']">
-              Filter
-            </div>
-            <button
-              onClick={onClose}
-              aria-label="Close filter modal"
-              className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full transition"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className="w-6 h-6 text-gray-900"
+  // Toggle category selection
+  const toggleCategory = (cat) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
+  // Inside your ServiceFilter component, before the return statement:
+
+  function FilterModal({ onClose }) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+        <div className="relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto m-4">
+          <div className="w-full bg-white rounded-[10px] flex flex-col justify-center items-start gap-10 overflow-hidden p-4 sm:p-8 md:p-10">
+            {/* Modal Header */}
+            <div className="w-full p-4 sm:p-5 bg-slate-50 rounded-[20px] flex justify-between items-center gap-4">
+              <div className="text-gray-900 text-2xl sm:text-3xl md:text-4xl font-bold font-['Inter']">
+                Filter
+              </div>
+              <button
+                onClick={onClose}
+                aria-label="Close filter modal"
+                className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full transition"
               >
-                <line
-                  x1="6"
-                  y1="6"
-                  x2="18"
-                  y2="18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <line
-                  x1="18"
-                  y1="6"
-                  x2="6"
-                  y2="18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6 text-gray-900"
+                >
+                  <line
+                    x1="6"
+                    y1="6"
+                    x2="18"
+                    y2="18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <line
+                    x1="18"
+                    y1="6"
+                    x2="6"
+                    y2="18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            {/* Filter Tags */}
+            <div className="w-full min-h-[80px] max-h-[200px] flex flex-wrap gap-3 overflow-y-auto">
+              {tags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  type="button"
+                  className={`p-4 sm:p-5 rounded-full outline outline-1 outline-gray-200 flex items-center gap-1.5 font-['Inter'] text-base sm:text-xl font-normal transition
+                    ${
+                      selectedTags.includes(tag)
+                        ? "bg-gray-900 text-white outline-gray-900"
+                        : "bg-white text-gray-900 hover:bg-gray-50"
+                    }
+                  `}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            {/* Price */}
+            <div className="w-full flex flex-col gap-3">
+              <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
+                Price
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
+                <div className="flex-1 flex flex-col gap-2.5">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Min"
+                    className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                  />
+                </div>
+                <div className="flex-1 flex flex-col gap-2.5">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Max"
+                    className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            {/* Delivery Time */}
+            <div className="w-full flex flex-col gap-3">
+              <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
+                Delivery time
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
+                <select
+                  className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
+                  value={deliveryTime}
+                  onChange={(e) => setDeliveryTime(e.target.value)}
+                >
+                  {deliveryOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Apply Filter Button */}
+            <button
+              disabled={isPending}
+              onClick={() => {
+                startTransition(() => {
+                  const params = new URLSearchParams(searchParams.toString());
+                  // Combine categories and tags, deduplicate, and set as tags
+                  const combined = Array.from(
+                    new Set([...selectedCategories, ...selectedTags])
+                  );
+                  if (combined.length > 0) {
+                    params.set("tags", combined.join(","));
+                  } else {
+                    params.delete("tags");
+                  }
+                  // Min/Max price
+                  if (minPrice) {
+                    params.set("minPrice", minPrice);
+                  } else {
+                    params.delete("minPrice");
+                  }
+                  if (maxPrice) {
+                    params.set("maxPrice", maxPrice);
+                  } else {
+                    params.delete("maxPrice");
+                  }
+                  // Delivery time
+                  if (deliveryTime && deliveryTime !== "Any") {
+                    params.set("deliveryTime", deliveryTime);
+                  } else {
+                    params.delete("deliveryTime");
+                  }
+                  router.push(`${pathname}?${params.toString()}`);
+                  onClose();
+                });
+              }}
+              className="w-full max-w-xs mx-auto px-8 py-4 bg-gray-900 rounded-[20px] flex justify-center items-center text-white text-lg sm:text-xl font-bold font-['Inter'] leading-tight transition hover:bg-gray-800 disabled:opacity-50"
+            >
+              {isPending ? "Applying..." : "Apply filter"}
             </button>
           </div>
-          {/* Filter Tags */}
-          <div className="w-full min-h-[80px] max-h-[200px] flex flex-wrap gap-3 overflow-y-auto">
-            {tags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => toggleTag(tag)}
-                type="button"
-                className={`p-4 sm:p-5 rounded-full outline outline-1 outline-gray-200 flex items-center gap-1.5 font-['Inter'] text-base sm:text-xl font-normal transition
-                  ${
-                    selectedTags.includes(tag)
-                      ? "bg-gray-900 text-white outline-gray-900"
-                      : "bg-white text-gray-900 hover:bg-gray-50"
-                  }
-                `}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          {/* Price */}
-          <div className="w-full flex flex-col gap-3">
-            <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
-              Price
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
-              <div className="flex-1 flex flex-col gap-2.5">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Min"
-                  className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-2.5">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Max"
-                  className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-          {/* Delivery Time */}
-          <div className="w-full flex flex-col gap-3">
-            <div className="text-gray-900 text-lg sm:text-xl font-medium font-['Inter']">
-              Delivery time
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 w-full">
-              <select
-                className="w-full p-4 sm:p-5 bg-emerald-50/30 rounded-xl outline outline-1 outline-gray-900/20 text-zinc-700 text-sm font-normal font-['Inter']"
-                value={deliveryTime}
-                onChange={(e) => setDeliveryTime(e.target.value)}
-              >
-                {deliveryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          {/* Apply Filter Button */}
-          <button
-            disabled={isPending}
-            onClick={() => {
-              startTransition(() => {
-                const params = new URLSearchParams(searchParams.toString());
-                // Tags as comma separated
-                if (selectedTags.length > 0) {
-                  params.set("tags", selectedTags.join(","));
-                } else {
-                  params.delete("tags");
-                }
-                // Min/Max price
-                if (minPrice) {
-                  params.set("minPrice", minPrice);
-                } else {
-                  params.delete("minPrice");
-                }
-                if (maxPrice) {
-                  params.set("maxPrice", maxPrice);
-                } else {
-                  params.delete("maxPrice");
-                }
-                // Delivery time
-                if (deliveryTime && deliveryTime !== "Any") {
-                  params.set("deliveryTime", deliveryTime);
-                } else {
-                  params.delete("deliveryTime");
-                }
-                router.push(`${pathname}?${params.toString()}`);
-                onClose();
-              });
-            }}
-            className="w-full max-w-xs mx-auto px-8 py-4 bg-gray-900 rounded-[20px] flex justify-center items-center text-white text-lg sm:text-xl font-bold font-['Inter'] leading-tight transition hover:bg-gray-800 disabled:opacity-50"
-          >
-            {isPending ? "Applying..." : "Apply filter"}
-          </button>
         </div>
       </div>
-    </div>
-  );
-
+    );
+  }
   // Only open modal on click
   const handleOpenModal = () => setFiltersOpen(true);
 
@@ -246,12 +266,30 @@ export default function ServiceFilter() {
                 <button
                   className={`px-4 py-2 rounded-lg font-medium text-base whitespace-nowrap transition
                     ${
-                      category === cat
+                      selectedCategories.includes(cat)
                         ? "bg-[#DCEFF6] text-black font-bold border-2 border-[#1BB0CE] shadow-sm scale-105"
                         : "text-gray-700 hover:bg-[#e0f7fa] border border-transparent"
                     }
                   `}
-                  onClick={() => setCategory(cat)}
+                  onClick={() => {
+                    toggleCategory(cat);
+                    // Combine categories and tags, deduplicate, and set as tags in query params
+                    const combined = Array.from(
+                      new Set([
+                        ...(selectedCategories.includes(cat)
+                          ? selectedCategories.filter((c) => c !== cat)
+                          : [...selectedCategories, cat]),
+                        ...selectedTags,
+                      ])
+                    );
+                    const params = new URLSearchParams(searchParams.toString());
+                    if (combined.length > 0) {
+                      params.set("tags", combined.join(","));
+                    } else {
+                      params.delete("tags");
+                    }
+                    router.push(`${pathname}?${params.toString()}`);
+                  }}
                   type="button"
                 >
                   {cat}

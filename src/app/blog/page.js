@@ -1,20 +1,38 @@
+// app/blogs/page.jsx
+import AllBlogs from "../../../components/blog/allblogs/AllBlogs";
 
+export default async function Page({ searchParams }) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
-import ServiceFilter from "../../../components/service/ServiceFilter";
-import TrendingDesigns from "../../../components/featured-shots";
-import CarousalCategory from "../../../components/useable/CarousalCategory";
+  // Convert searchParams to a plain object, then to query string
+  const query =
+    searchParams && typeof searchParams === "object"
+      ? new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(searchParams).filter(
+              ([key, value]) =>
+                typeof value === "string" || typeof value === "number"
+            )
+          )
+        ).toString()
+      : "";
 
-const Blogs = () => {
+  let blogsData = null;
+
+  try {
+    const res = await fetch(`${baseUrl}/blogs${query ? `?${query}` : ""}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch blogs");
+    blogsData = await res.json();
+  } catch (err) {
+    blogsData = { success: false, data: [], error: err.message };
+  }
+
   return (
-    <div className="px-4 sm:px-8">
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 mt-6 text-center">
-        All Blogs
-      </h1>
-      {/* <ServiceFilter /> */}
-      <TrendingDesigns />
-      <CarousalCategory />
+    <div>
+      <AllBlogs blogs={blogsData} />
     </div>
   );
-};
-
-export default Blogs;
+}
