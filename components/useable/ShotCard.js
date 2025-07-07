@@ -30,6 +30,7 @@ const ShotCard = ({ shot, type }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Added for cross-origin auth
       });
 
       if (!response.ok) {

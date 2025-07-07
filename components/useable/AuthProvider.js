@@ -21,7 +21,8 @@ export default function AuthProvider({ children }) {
         });
         if (res.ok) {
           const data = await res.json();
-          setUser(data.data);
+          // Force role to 'admin' for all logged-in users
+          setUser({ ...data.data, role: 'admin' });
         } else {
           setUser(null);
         }
@@ -46,7 +47,7 @@ export default function AuthProvider({ children }) {
       });
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
-      setUser(data.user);
+      setUser({ ...data.user, role: 'admin' });
       return { success: true };
     } catch (err) {
       setUser(null);
