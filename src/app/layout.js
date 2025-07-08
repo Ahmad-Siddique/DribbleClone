@@ -6,7 +6,7 @@ import { Inter } from "next/font/google";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Footer from "../../components/useable/footer";
-import Navbar1 from "../../components/useable/navbar1";
+import Navbar2 from "../../components/useable/navbar2";
 import "swiper/css";
 import AuthProvider from "../../components/useable/AuthProvider";
 
@@ -42,9 +42,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${inter.variable} antialiased  overflow-x-hidden`}
       >
         {/* <Navbar /> */}
-        <Navbar1 />
-        <div className="h-30" />
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Navbar2 />
+          <div className="h-30" />
+          {children}
+        </AuthProvider>
         <Footer />
       </body>
     </html>

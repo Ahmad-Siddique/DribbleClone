@@ -40,38 +40,31 @@ const testimonials = [
 
 const Testimonial = () => {
   return (
-    <div className="w-full px-4 py-12 bg-[#E4F0F0] flex flex-col items-center ">
-      <div className="max-w-7xl w-full">
-        {/* Center-aligned heading */}
-        <div className="mb-12 text-center">
-          <h2 className="text-gray-900 text-4xl md:text-6xl font-semibold font-['Source_Serif_4'] text-center">
+    <section className="w-full px-4 py-16 bg-[#E4F0F0] relative flex flex-col items-center overflow-hidden">
+      {/* Decorative blurred teal shapes */}
+      <div className="absolute left-[-60px] top-[-60px] w-[180px] h-[180px] bg-teal-200 rounded-full blur-3xl opacity-20 z-0" />
+      <div className="absolute right-[-80px] bottom-[-80px] w-[220px] h-[220px] bg-teal-100 rounded-full blur-3xl opacity-10 z-0" />
+      <div className="max-w-7xl w-full relative z-10">
+        {/* Center-aligned heading with teal accent */}
+        <div className="mb-14 text-center">
+          <h2 className="text-slate-950 text-4xl md:text-5xl font-extrabold font-['Inter',_sans-serif] inline-block relative">
             Testimonials
+            <span className="block h-1 w-16 bg-teal-500 rounded-full mx-auto mt-3" />
           </h2>
         </div>
 
-        <div className="flex flex-col items-center gap-8 lg:flex-row lg:justify-center lg:gap-8">
+        <div className="flex flex-col items-center gap-10 lg:flex-row lg:justify-center lg:gap-10">
           {testimonials.map((t, idx) => (
             <div
               key={idx}
-              className="
-                flex flex-col justify-between
-                bg-white rounded-[10px] backdrop-blur-[10px]
-                p-6 md:p-8
-                gap-6 shadow-sm
-                w-full
-                max-w-[95vw]
-                sm:max-w-[500px]
-                md:min-w-[400px] md:max-w-[600px]
-                lg:min-w-[500px] lg:max-w-[600px]
-                flex-1
-              "
+              className="flex flex-col justify-between bg-white rounded-2xl border border-teal-100 p-7 md:p-9 gap-6 shadow-md w-full max-w-[95vw] sm:max-w-[420px] md:min-w-[340px] md:max-w-[420px] lg:min-w-[360px] lg:max-w-[420px] flex-1 transition-shadow hover:shadow-lg"
               style={{ minHeight: "320px" }}
             >
               <div className="text-left">
-                <h3 className="text-neutral-950 text-2xl md:text-3xl font-semibold font-['Inter'] leading-10 mb-4">
+                <h3 className="text-slate-950 text-2xl md:text-2.5xl font-bold font-['Inter'] leading-9 mb-4">
                   {t.title}
                 </h3>
-                <p className="text-neutral-950 text-base font-normal font-['Inter'] leading-normal mb-6">
+                <p className="text-gray-600 text-base font-normal font-['Inter'] leading-normal mb-6">
                   {t.text}
                 </p>
                 <div className="flex items-center gap-1 mb-6">
@@ -81,7 +74,7 @@ const Testimonial = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-auto">
-                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-teal-400">
                   <img
                     src={t.avatar}
                     alt={t.author}
@@ -89,10 +82,10 @@ const Testimonial = () => {
                   />
                 </div>
                 <div>
-                  <div className="text-neutral-950 text-sm font-normal font-['Inter']">
+                  <div className="text-slate-950 text-sm font-semibold font-['Inter']">
                     {t.author}
                   </div>
-                  <div className="text-neutral-950/60 text-[10px] font-normal font-['Inter']">
+                  <div className="text-gray-500 text-xs font-normal font-['Inter']">
                     {t.company}
                   </div>
                 </div>
@@ -101,7 +94,7 @@ const Testimonial = () => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
