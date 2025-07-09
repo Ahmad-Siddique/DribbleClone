@@ -26,6 +26,7 @@ export default async function Page({ searchParams }) {
     });
     if (!res.ok) throw new Error("Failed to fetch blogs");
     blogsData = await res.json();
+    console.log("BLOGS DATA LENGTH", blogsData.data.length);
   } catch (err) {
     blogsData = { success: false, data: [], error: err.message };
   }
