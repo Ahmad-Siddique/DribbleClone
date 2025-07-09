@@ -10,7 +10,7 @@ const AllBlogs = ({blogs}) => {
       </h1>
       
       {/* Check if blogs array is empty */}
-      {blogs && blogs.length > 0 ? (
+      {blogs && blogs.data.length > 0 ? (
         <>
           <BlogDesign blogs={blogs} />
           
