@@ -101,33 +101,32 @@ const Navbar2 = () => {
           {/* Right: Search & Auth */}
           <div className="hidden md:flex items-center gap-x-6 flex-shrink-0">
             <form
-              className="flex items-center w-[260px] lg:w-[320px] xl:w-[400px]"
+              className="flex items-center w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl xl:max-w-3xl"
               onSubmit={handleSearchSubmit}
               autoComplete="off"
             >
-              <div className="flex items-center border border-black rounded-xl px-2 py-2 h-[40px] w-full">
+              <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[44px] sm:h-[48px] w-full ring-1 ring-inset ring-gray-200 transition-all duration-200" style={{ backgroundColor: '#E8F3F3' }}>
                 <input
                   type="text"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search shots, blogs, services…"
-                  className="flex-1 bg-transparent px-3 py-2 text-gray-900 text-base focus:outline-none placeholder-black"
-                  style={{ height: "24px" }}
+                  placeholder="What are you looking for?"
+                  className="flex-1 px-3 sm:px-5 py-1 sm:py-2 text-[#3A3546] text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
+                  style={{ height: '32px', fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
                 />
-                {/* Dropdown with SVG */}
                 <div className="relative flex items-center">
                   <select
                     value={searchType}
                     onChange={(e) => setSearchType(e.target.value)}
-                    className="appearance-none bg-transparent border-0 text-gray-900 text-base font-semibold pr-8 pl-2 py-1 h-8 focus:outline-none cursor-pointer min-w-[90px]"
+                    className="appearance-none bg-transparent border-0 text-[#3A3546] text-base font-medium pr-8 pl-2 py-0 h-8 focus:outline-none cursor-pointer min-w-[90px] font-inter-regular"
+                    style={{ fontSize: '14px' }}
                   >
                     <option value="shots">Shots</option>
                     <option value="blogs">Blogs</option>
                     <option value="services">Services</option>
                   </select>
-                  {/* Dropdown SVG */}
                   <svg
-                    className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-700"
+                    className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#3A3546]"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
@@ -143,7 +142,7 @@ const Navbar2 = () => {
                 </div>
                 <button
                   type="submit"
-                  className="flex items-center justify-center aspect-square h-8 rounded-full bg-black hover:bg-gray-800 transition-colors ml-2 cursor-pointer"
+                  className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none transform hover:scale-105"
                 >
                   <MagnifyingGlassIcon className="h-4 w-4 text-white" />
                 </button>

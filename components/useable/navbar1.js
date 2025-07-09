@@ -250,13 +250,13 @@ const Navbar1 = () => {
             </form>
             <Link href="/login">
               <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-lg font-bold font-['Arial'] hover:bg-gray-100 transition cursor-pointer">
-                Log in
-              </button>
+              Log in
+            </button>
             </Link>
             <Link href="/signup">
               <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-lg font-bold font-['Arial'] hover:bg-gray-800 transition cursor-pointer">
-                Sign up
-              </button>
+              Sign up
+            </button>
             </Link>
           </div>
 
@@ -367,13 +367,13 @@ const Navbar1 = () => {
             <div className="flex flex-col gap-2 w-full max-w-full items-center pt-2 border-t border-gray-200">
               <Link href="/login" className="w-11/12">
                 <button className="w-full px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold hover:bg-gray-100 transition">
-                  Log in
-                </button>
+                Log in
+              </button>
               </Link>
               <Link href="/signup" className="w-11/12">
                 <button className="w-full px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-base font-bold hover:bg-gray-800 transition cursor-pointer">
-                  Sign up
-                </button>
+                Sign up
+              </button>
               </Link>
             </div>
           </div>

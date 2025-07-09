@@ -93,8 +93,8 @@ export default function AllShotsAdmin({
     <div className="max-w-full mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">
-          Shots Management
-        </h1>
+        Shots Management
+      </h1>
         <button
           onClick={handleCreateShotsClick}
           className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors cursor-pointer text-sm font-medium"

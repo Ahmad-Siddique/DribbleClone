@@ -64,40 +64,40 @@ const FAQ = () => {
       <div className="absolute right-[-80px] bottom-[-80px] w-[220px] h-[220px] bg-teal-100 rounded-full blur-3xl opacity-10 z-0" />
       <div className="relative z-10">
         <h2 className="text-slate-950 text-4xl md:text-5xl font-extrabold font-['Inter',_sans-serif] mb-10 text-center inline-block w-full">
-          Frequently Asked Questions
+        Frequently Asked Questions
           <span className="block h-1 w-16 bg-teal-500 rounded-full mx-auto mt-3" />
-        </h2>
+      </h2>
         <div className="w-full bg-[#E4F0F0] rounded-2xl p-6 sm:p-12 md:p-16 shadow-md">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="flex flex-col gap-3">
-                <button
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="flex flex-col gap-3">
+              <button
                   className="w-full flex justify-between items-center px-6 py-5 bg-white rounded-xl border border-teal-100 text-left focus:outline-none transition hover:shadow-md"
-                  onClick={() => handleToggle(idx)}
-                  aria-expanded={openIdx === idx}
-                  aria-controls={`faq-answer-${idx}`}
-                >
+                onClick={() => handleToggle(idx)}
+                aria-expanded={openIdx === idx}
+                aria-controls={`faq-answer-${idx}`}
+              >
                   <span className="text-slate-950 text-base font-normal font-['Inter'] leading-normal flex-1">
-                    {faq.question}
-                  </span>
-                  <span className="ml-6 flex-shrink-0">
-                    <PlusIcon open={openIdx === idx} />
-                  </span>
-                </button>
-                <div
-                  id={`faq-answer-${idx}`}
+                  {faq.question}
+                </span>
+                <span className="ml-6 flex-shrink-0">
+                  <PlusIcon open={openIdx === idx} />
+                </span>
+              </button>
+              <div
+                id={`faq-answer-${idx}`}
                   className={`px-6 pb-4 text-gray-600 text-base font-normal font-['Inter'] transition-all duration-300 ease-in-out overflow-hidden ${
-                    openIdx === idx ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
-                  }`}
-                  style={{ transitionProperty: "max-height, opacity" }}
-                >
-                  {openIdx === idx && <div className="pt-2">{faq.answer}</div>}
-                </div>
+                  openIdx === idx ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
+                }`}
+                style={{ transitionProperty: "max-height, opacity" }}
+              >
+                {openIdx === idx && <div className="pt-2">{faq.answer}</div>}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
+    </div>
     </section>
   );
 };

@@ -34,7 +34,7 @@ export default function BlogDesign({ blogs }) {
               views: blog.views, // No views in blog data
               pro: false,
               team: false,
-              href: `/blog/view/${blog.slug}`,
+              href: `/blogs/view/${blog.slug}`,
             }}
           />
         ))}

@@ -52,111 +52,86 @@ export default function HeroSection() {
     }
   };
 
-  // Dots background style (adjust opacity for each side)
-  const topBottomDotsStyle = {
-    backgroundImage:
-      "radial-gradient(rgba(20,83,45,0.34) 7px, transparent 7px)",
-    backgroundSize: "50px 50px", // increased spacing
-    opacity: 0.35,
+  // Full-section dotted background style
+  const sectionDotsBg = {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    backgroundImage: "radial-gradient(rgba(20,83,45,0.18) 7px, transparent 8px)",
+    backgroundSize: "44px 44px",
+    opacity: 0.45,
     pointerEvents: "none",
-  };
-  // Left and right (80% fainter)
-  const leftRightDotsStyle = {
-    backgroundImage:
-      "radial-gradient(rgba(20,83,45,0.18) 7px, transparent 7px)",
-    backgroundSize: "50px 50px", // increased spacing
-    opacity: 0.85,
-    pointerEvents: "none",
+    zIndex: 1,
   };
 
   return (
     <section className="relative bg-white pt-20 pb-24 px-4 md:px-0 overflow-hidden min-h-[600px] flex items-center justify-center">
-      {/* Decorative blurred teal shapes, softer and more modern */}
-      <div className="absolute left-[-100px] top-[-100px] w-[340px] h-[340px] bg-teal-100 rounded-full blur-3xl opacity-20 z-0" />
-      <div className="absolute right-[-120px] bottom-[-120px] w-[400px] h-[400px] bg-teal-200 rounded-full blur-3xl opacity-10 z-0" />
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[80vw] h-24 bg-gradient-to-r from-teal-50 via-white to-teal-50 blur-2xl opacity-40 z-0" />
-      <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10 px-2">
+      {/* Dotted background covering the entire section */}
+      <div aria-hidden="true" style={sectionDotsBg} />
+
+      {/* Decorative blurred teal shapes */}
+      <div className="absolute left-[-100px] top-[-100px] w-[340px] h-[340px] bg-teal-100 rounded-full blur-3xl opacity-20 z-10" />
+      <div className="absolute right-[-120px] bottom-[-120px] w-[400px] h-[400px] bg-teal-200 rounded-full blur-3xl opacity-10 z-10" />
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[80vw] h-24 bg-gradient-to-r from-teal-50 via-white to-teal-50 blur-2xl opacity-40 z-10" />
+
+      {/* Main content */}
+      <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-20 px-2">
         <h1
-          className="max-w-[900px] text-[2.9rem] sm:text-[3.5rem] md:text-[4.3rem] lg:text-[4.5rem] font-extrabold leading-tight text-center mx-auto mb-8 break-words font-['Inter',_sans-serif] text-slate-950 drop-shadow-sm"
+          className="max-w-[900px] font-source-serif-semi text-[2.9rem] sm:text-[3.5rem] md:text-[4.3rem] lg:text-[4.375rem] leading-tight text-center mx-auto mb-8 break-words text-slate-950 drop-shadow-sm"
+          style={{ fontSize: '70px' }}
         >
           Discover the world's top
           <span
-            className="text-teal-600 font-extrabold ml-3"
+            className="text-teal-600 font-source-serif-semi ml-3"
+            style={{ fontSize: '70px' }}
           >
             designers
           </span>
         </h1>
-        <p className="font-sans text-xl sm:text-2xl md:text-2xl font-normal max-w-[650px] text-center text-gray-600 mb-10">
+        <p className="font-inter-regular text-[18px] font-normal max-w-[650px] text-center text-gray-600 mb-10">
           Explore work from the most talented and accomplished designers ready to take on your next project.
         </p>
 
-        {/* Search box with dotted frame */}
-        <div className="relative w-full max-w-2xl mb-10 mt-2 flex justify-center items-center">
-          {/* Top Dots */}
-          <div
-            aria-hidden="true"
-            className="absolute left-0 top-[-24px] w-full h-8 z-0"
-            style={topBottomDotsStyle}
-          />
-          {/* Bottom Dots */}
-          <div
-            aria-hidden="true"
-            className="absolute left-0 bottom-[-24px] w-full h-8 z-0"
-            style={topBottomDotsStyle}
-          />
-          {/* Left Dots */}
-          <div
-            aria-hidden="true"
-            className="absolute left-[-24px] top-0 h-full w-8 z-0"
-            style={leftRightDotsStyle}
-          />
-          {/* Right Dots */}
-          <div
-            aria-hidden="true"
-            className="absolute right-[-24px] top-0 h-full w-8 z-0"
-            style={leftRightDotsStyle}
-          />
-
-          {/* Search Form */}
-          {/* (Unchanged) */}
+        {/* Search box */}
+        <div className="relative w-full max-w-2xl mb-10 mt-2 flex justify-center items-center z-30">
           <form className="w-full relative z-10" onSubmit={handleSubmit}>
-            <div className="flex items-center border border-black rounded-xl bg-[#DCEFF6] shadow-lg px-2 py-2 h-[56px] sm:h-[64px] overflow-hidden">
-              {/* Search Input */}
+            <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[56px] sm:h-[64px] overflow-hidden ring-1 ring-inset ring-gray-200 transition-all duration-200"
+              style={{ backgroundColor: '#E8F3F3' }}>
               <input
                 type="text"
-                placeholder="Search designers, jobs, inspiration…"
-                className="flex-1 bg-transparent px-3 sm:px-5 py-2 sm:py-3 text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-teal-400 placeholder-black rounded-l-xl"
-                style={{ height: "38px" }}
+                placeholder="What are you looking for?"
+                className="flex-1 px-3 sm:px-5 py-2 sm:py-3 text-[#3A3546] text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
+                style={{ height: '44px', fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Search designers, jobs, inspiration"
               />
-              {/* Dropdown */}
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
-                className="bg-transparent text-gray-900 text-base font-medium px-3 py-2 focus:outline-none transition h-10 sm:h-12 border-0 shadow-none rounded-none"
-                style={{ minWidth: 110 }}
+                className="bg-transparent text-gray-900 text-base font-medium px-3 py-2 focus:outline-none transition h-8 sm:h-10 border-0 shadow-none rounded-none font-inter-regular"
+                style={{ minWidth: 90, fontSize: '14px' }}
                 aria-label="Search category"
               >
                 <option value="shots">Shots</option>
                 <option value="service">Services</option>
                 <option value="blog">Blogs</option>
               </select>
-              {/* Search Button */}
               <button
                 type="submit"
-                className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transform hover:scale-105"
+                className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transform hover:scale-105"
                 aria-label="Search"
               >
-                <MagnifyingGlassIcon className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
+                <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </button>
             </div>
           </form>
         </div>
 
         <div
-          className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-3 sm:gap-4 text-base text-gray-500 py-2 w-full overflow-x-auto sm:overflow-x-visible whitespace-nowrap sm:whitespace-nowrap md:whitespace-normal"
+          className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-3 sm:gap-4 text-base text-gray-500 py-2 w-full overflow-x-auto sm:overflow-x-visible whitespace-nowrap sm:whitespace-nowrap md:whitespace-normal font-inter-regular"
+          style={{ fontSize: '16px' }}
         >
           <span className="shrink-0 py-1">Trending Searches:</span>
           {[
@@ -169,8 +144,8 @@ export default function HeroSection() {
             <button
               key={tag}
               onClick={() => handleTrendingClick(tag)}
-              className={`rounded-full px-5 py-2 font-semibold shadow-sm hover:bg-teal-200 hover:text-teal-900 transition-colors duration-150 shrink-0 border-0 ${color}`}
-              style={{ letterSpacing: "0.01em" }}
+              className={`rounded-full px-5 py-2 font-semibold shadow-sm hover:bg-teal-200 hover:text-teal-900 transition-colors duration-150 shrink-0 border-0 ${color} font-inter-regular`}
+              style={{ letterSpacing: '0.01em', fontSize: '16px' }}
             >
               {tag}
             </button>
