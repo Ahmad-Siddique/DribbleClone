@@ -29,6 +29,7 @@ export default async function Page({ searchParams }) {
     });
     if (!res.ok) throw new Error("Failed to fetch shots");
     shotsData = await res.json();
+   
   } catch (err) {
     shotsData = { success: false, data: [], error: err.message };
   }

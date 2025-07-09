@@ -13,7 +13,7 @@ const OtherBlogs = ({ blog }) => {
         {relevantBlogs.map((b, idx) => (
           <Link
             key={b._id || idx}
-            href={`/blog/view/${b.slug}`}
+            href={`/blogs/view/${b.slug}`}
             className="w-full"
             style={{ textDecoration: "none" }}
           >

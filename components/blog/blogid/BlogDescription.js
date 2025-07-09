@@ -91,7 +91,7 @@ const BlogDescription = ({ blog }) => {
                   ].map((cat) => (
                     <a
                       key={cat}
-                      href={`/blog?category=${encodeURIComponent(cat)}`}
+                      href={`/blogs?category=${encodeURIComponent(cat)}`}
                       className="text-gray-900 text-base sm:text-xl font-normal font-['Inter'] cursor-pointer hover:underline"
                     >
                       {cat}

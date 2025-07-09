@@ -45,7 +45,7 @@ export default function HeroSection() {
         router.push(`/services?title=${encodedQuery}`);
         break;
       case "blog":
-        router.push(`/blog?search=${encodedQuery}`);
+        router.push(`/blogs?search=${encodedQuery}`);
         break;
       default:
         router.push(`/shots?title=${encodedQuery}`);
@@ -89,45 +89,88 @@ export default function HeroSection() {
             designers
           </span>
         </h1>
-        <p className="font-inter-regular text-[18px] font-normal max-w-[650px] text-center text-0D0C22-600 mb-10">
+        <p className="font-inter-regular text-[18px] font-normal max-w-[650px] text-center text-gray-600 mb-10">
           Explore work from the most talented and accomplished designers ready to take on your next project.
         </p>
 
-        {/* Search box */}
-        <div className="relative w-full max-w-2xl mb-10 mt-2 flex justify-center items-center z-30">
-          <form className="w-full relative z-10" onSubmit={handleSubmit}>
-            <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[52px] sm:h-[68px] overflow-hidden ring-1 ring-inset ring-gray-200  transition-all duration-200"
-            style={{backgroundColor: '#E8F3F3'}}>
-              <input
-                type="text"
-                placeholder="What are you looking for?"
-                className="flex-1 px-2 sm:px-5 py-3 sm:py-5 text-[#3A3546] text-sm sm:text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
-                style={{ height: '48px', fontSize: '15px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Search designers, jobs, inspiration"
-              />
-              <select
-                value={searchType}
-                onChange={(e) => setSearchType(e.target.value)}
-                className="bg-transparent text-gray-900 text-sm sm:text-base font-medium px-2 sm:px-3 py-3 sm:py-4 focus:outline-none transition h-12 sm:h-14 border-0 shadow-none rounded-none font-inter-regular"
-                style={{ minWidth: 70, fontSize: '15px' }}
-                aria-label="Search category"
-              >
-                <option value="shots">Shots</option>
-                <option value="service">Services</option>
-                <option value="blog">Blogs</option>
-              </select>
-              <button
-                type="submit"
-                className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transform hover:scale-105"
-                aria-label="Search"
-              >
-                <MagnifyingGlassIcon className="h-5 w-5 text-white" />
-              </button>
-            </div>
-          </form>
-        </div>
+        {/* Responsive Search box - Original horizontal design */}
+        {/* Responsive Search box - Original horizontal design */}
+<div className="relative w-full max-w-full sm:max-w-2xl mb-10 mt-2 flex justify-center items-center z-30 mx-0">
+  <form className="w-full max-w-full relative z-10" onSubmit={handleSubmit}>
+    <div
+      className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-1 sm:px-2 py-1 sm:py-2 h-[52px] sm:h-[60px] overflow-hidden ring-1 ring-inset ring-gray-200 transition-all duration-200"
+      style={{ backgroundColor: '#E8F3F3' }}
+    >
+      <input
+        type="text"
+        placeholder="What are you looking for?"
+        className="
+          flex-1 min-w-0
+          px-2 sm:px-4
+          py-2 sm:py-3
+          text-[#3A3546]
+          text-sm sm:text-base
+          placeholder-[#3A3546]
+          rounded-l-2xl
+          font-inter-regular
+          focus:outline-none
+          bg-[#E8F3F3]
+        "
+        style={{
+          fontSize: '15px',
+          boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)',
+        }}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        aria-label="Search designers, jobs, inspiration"
+      />
+      <select
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value)}
+        className="
+          bg-transparent
+          text-gray-900
+          text-sm sm:text-base
+          font-medium
+          px-2 sm:px-3
+          py-2 sm:py-3
+          focus:outline-none
+          transition
+          h-[44px] sm:h-[50px]
+          border-0
+          shadow-none
+          rounded-none
+          font-inter-regular
+        "
+        style={{ fontSize: '15px', minWidth: 70 }}
+        aria-label="Search category"
+      >
+        <option value="shots">Shots</option>
+        <option value="service">Services</option>
+        <option value="blog">Blogs</option>
+      </select>
+      <button
+        type="submit"
+        className="
+          flex items-center justify-center
+          w-10 sm:w-11
+          h-10 sm:h-11
+          rounded-full
+          bg-black hover:bg-gray-800
+          transition-all duration-150
+          ml-2
+          cursor-pointer shadow-lg
+          focus:outline-none focus:ring-2 focus:ring-teal-400
+          transform hover:scale-105
+        "
+        aria-label="Search"
+      >
+        <MagnifyingGlassIcon className="h-5 w-5 text-white" />
+      </button>
+    </div>
+  </form>
+</div>
+
 
         <div
           className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-3 sm:gap-4 text-base text-gray-500 py-2 w-full overflow-x-auto sm:overflow-x-visible whitespace-nowrap sm:whitespace-nowrap md:whitespace-normal font-inter-regular"
@@ -135,16 +178,16 @@ export default function HeroSection() {
         >
           <span className="shrink-0 py-1">Trending Searches:</span>
           {[
-            { tag: "UI Design", color: "bg-gray-100 text-gray-700" },
-            { tag: "Illustration", color: "bg-gray-100 text-gray-700" },
-            { tag: "Branding", color: "bg-teal-50 text-gray-800" },
-            { tag: "Web Design", color: "bg-white text-slate-950 border border-gray-200" },
-            { tag: "App Design", color: "bg-gray-50 text-gray-800" },
-          ].map(({ tag, color }) => (
+            "UI Design",
+            "Illustration",
+            "Branding",
+            "Web Design",
+            "App Design",
+          ].map((tag) => (
             <button
               key={tag}
               onClick={() => handleTrendingClick(tag)}
-              className={`rounded-full px-5 py-2 font-semibold shadow-sm hover:bg-teal-200 hover:text-teal-900 transition-colors duration-150 shrink-0 border-0 ${color} font-inter-regular`}
+              className="rounded-full px-5 py-2 font-semibold shadow-sm hover:bg-teal-200 hover:text-teal-900 transition-colors duration-150 shrink-0 border-0 bg-gray-100 text-gray-700 font-inter-regular"
               style={{ letterSpacing: '0.01em', fontSize: '16px' }}
             >
               {tag}
