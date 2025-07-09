@@ -7,7 +7,7 @@ const ShotsSection = ({ shots }) => {
   return (
     <div>
       <Suspense fallback={<div>Loading filters...</div>}>
-        <ShotsFilterHome />
+        <ShotsFilter />
 
         <ShotsDesign shots={shots} />
        

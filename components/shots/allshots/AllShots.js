@@ -26,6 +26,7 @@ const AllShots = ({shots}) => {
             </div>
           </div>
         )}
+        <div className="h-32"></div>
         <LastSection />
       </Suspense>
     </div>

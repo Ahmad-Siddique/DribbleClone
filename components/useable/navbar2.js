@@ -18,6 +18,28 @@ const Navbar2 = () => {
     setIsClient(true);
   }, []);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuOpen && !event.target.closest('.mobile-menu-container') && !event.target.closest('.hamburger-button')) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen]);
+
   // Nav items
   const navLinks = [
     { name: "Shots", href: "/shots" },
@@ -27,7 +49,9 @@ const Navbar2 = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!router) return;
+    
     if (searchValue.trim()) {
       performSearch(searchValue);
     } else {
@@ -45,6 +69,8 @@ const Navbar2 = () => {
           router.push(`/shots`);
       }
     }
+    // Close mobile menu after search
+    setMenuOpen(false);
   };
 
   const performSearch = (query) => {
@@ -65,20 +91,27 @@ const Navbar2 = () => {
     }
   };
 
+  const handleLinkClick = (href) => {
+    setMenuOpen(false);
+    router.push(href);
+  };
+
   return (
-    <header className="w-full bg-transparent py-3 px-2 md:px-8">
+    <header className="w-full bg-transparent py-3 px-2 md:px-8 relative">
       {/* Background blur */}
       <div className="fixed z-0 w-40 h-40 left-[-60px] top-[-120px] bg-teal-600/20 rounded-full blur-2xl pointer-events-none" />
+      
       <nav className="relative z-10 max-w-screen-2xl mx-auto rounded-2xl bg-white/20 outline outline-1 outline-white flex items-center px-3 sm:px-6 md:px-12 py-3">
-        <div className="flex w-full items-center justify-between gap-x-12">
+        <div className="flex w-full items-center justify-between gap-x-4 md:gap-x-12">
           {/* Left: Logo + Nav Items */}
-          <div className="flex items-center gap-x-16 flex-shrink-0">
+          <div className="flex items-center gap-x-4 md:gap-x-16 flex-shrink-0">
             {/* Logo */}
             <Link href="/">
-              <img src="/logo1.png" alt="Logo" className="w-12 h-12 object-contain" />
+              <img src="/logo1.png" alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
             </Link>
-            {/* Nav Items */}
-            <div className="hidden md:flex items-center gap-x-2">
+            
+            {/* Nav Items - Desktop Only */}
+            <div className="hidden lg:flex items-center gap-x-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -98,35 +131,35 @@ const Navbar2 = () => {
               )}
             </div>
           </div>
-          {/* Right: Search & Auth */}
-          <div className="hidden md:flex items-center gap-x-6 flex-shrink-0">
+
+          {/* Center: Search - Desktop Only */}
+          <div className="hidden lg:flex items-center flex-1 max-w-md xl:max-w-lg">
             <form
-              className="flex items-center w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl xl:max-w-3xl"
+              className="w-full"
               onSubmit={handleSearchSubmit}
               autoComplete="off"
             >
-              <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[44px] sm:h-[48px] w-full ring-1 ring-inset ring-gray-200 transition-all duration-200" style={{ backgroundColor: '#E8F3F3' }}>
+              <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[48px] w-full ring-1 ring-inset ring-gray-200 transition-all duration-200" style={{ backgroundColor: '#E8F3F3' }}>
                 <input
                   type="text"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="What are you looking for?"
-                  className="flex-1 px-3 sm:px-5 py-1 sm:py-2 text-[#3A3546] text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
-                  style={{ height: '32px', fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
+                  className="flex-1 min-w-0 px-3 py-2 text-[#3A3546] text-sm placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none bg-[#E8F3F3]"
+                  style={{ fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)' }}
                 />
                 <div className="relative flex items-center">
                   <select
                     value={searchType}
                     onChange={(e) => setSearchType(e.target.value)}
-                    className="appearance-none bg-transparent border-0 text-[#3A3546] text-base font-medium pr-8 pl-2 py-0 h-8 focus:outline-none cursor-pointer min-w-[90px] font-inter-regular"
-                    style={{ fontSize: '14px' }}
+                    className="appearance-none bg-transparent border-0 text-[#3A3546] text-sm font-medium pr-6 pl-2 py-2 h-8 focus:outline-none cursor-pointer min-w-[80px] font-inter-regular"
                   >
                     <option value="shots">Shots</option>
                     <option value="blogs">Blogs</option>
                     <option value="services">Services</option>
                   </select>
                   <svg
-                    className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#3A3546]"
+                    className="pointer-events-none absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#3A3546]"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
@@ -142,31 +175,44 @@ const Navbar2 = () => {
                 </div>
                 <button
                   type="submit"
-                  className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none transform hover:scale-105"
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none transform hover:scale-105"
                 >
                   <MagnifyingGlassIcon className="h-4 w-4 text-white" />
                 </button>
               </div>
             </form>
+          </div>
+
+          {/* Right: Auth Buttons - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-x-4 flex-shrink-0">
             {loading ? null : user ? (
               <div className="flex items-center space-x-2">
-                {/* <span className="text-gray-700 font-medium">{user.name || "Admin"}</span> */}
-                <button onClick={logout} className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-lg font-bold font-['Arial'] hover:bg-gray-100 transition cursor-pointer">Logout</button>
+                <button 
+                  onClick={logout} 
+                  className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold font-['Arial'] hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Logout
+                </button>
               </div>
             ) : (
               <>
                 <Link href="/login">
-                  <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-lg font-bold font-['Arial'] hover:bg-gray-100 transition cursor-pointer">Log in</button>
+                  <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold font-['Arial'] hover:bg-gray-100 transition cursor-pointer">
+                    Log in
+                  </button>
                 </Link>
                 <Link href="/signup">
-                  <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-lg font-bold font-['Arial'] hover:bg-gray-800 transition cursor-pointer">Sign up</button>
+                  <button className="px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-base font-bold font-['Arial'] hover:bg-gray-800 transition cursor-pointer">
+                    Sign up
+                  </button>
                 </Link>
               </>
             )}
           </div>
-          {/* Hamburger Icon */}
+
+          {/* Hamburger Icon - Mobile/Tablet */}
           <button
-            className="md:hidden ml-auto"
+            className="lg:hidden ml-auto z-50 relative hamburger-button"
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-label="Toggle menu"
           >
@@ -177,95 +223,126 @@ const Navbar2 = () => {
             )}
           </button>
         </div>
-        {/* Mobile Menu */}
-        {isClient && menuOpen && (
-          <div className="absolute top-full left-0 w-full max-w-full bg-white shadow-lg rounded-b-2xl flex flex-col items-center py-4 gap-4 md:hidden z-30 overflow-x-hidden">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-slate-950 text-lg font-normal font-['Arial'] cursor-pointer hover:text-gray-700 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-            {!loading && user && (
-              <Link
-                href="/admin"
-                className="text-slate-950 text-lg font-normal font-['Arial'] cursor-pointer hover:text-gray-700 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            )}
-            {/* Mobile Search */}
-            <form
-              className="flex items-center w-11/12 max-w-full my-2"
-              onSubmit={handleSearchSubmit}
-              autoComplete="off"
-            >
-              <div className="flex items-center border border-black rounded-xl px-2 py-2 h-[36px] w-full max-w-full min-w-0">
-                <input
-                  type="text"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search…"
-                  className="flex-1 min-w-0 bg-transparent px-2 py-1 text-gray-900 text-sm focus:outline-none placeholder-black"
-                />
-                {/* Dropdown with SVG */}
-                <div className="relative flex items-center">
-                  <select
-                    value={searchType}
-                    onChange={(e) => setSearchType(e.target.value)}
-                    className="bg-transparent border-0 text-gray-900 text-base font-semibold px-2 py-1 mr-2 h-8 focus:outline-none cursor-pointer appearance-none pr-8"
-                  >
-                    <option value="shots">Shots</option>
-                    <option value="blogs">Blogs</option>
-                    <option value="services">Services</option>
-                  </select>
-                  {/* Dropdown SVG */}
-                  <svg
-                    className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-                <button
-                  type="submit"
-                  className="flex items-center justify-center aspect-square h-8 rounded-full bg-black hover:bg-gray-800 transition-colors ml-2"
-                  aria-label="Search"
-                >
-                  <MagnifyingGlassIcon className="h-4 w-4 text-white" />
-                </button>
-              </div>
-            </form>
-            {loading ? null : user ? (
-              <button onClick={() => { setMenuOpen(false); logout(); }} className="w-full px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold hover:bg-gray-100 transition">Logout</button>
-            ) : (
-              <>
-                <Link href="/login" className="w-11/12">
-                  <button className="w-full px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold hover:bg-gray-100 transition">Log in</button>
-                </Link>
-                <Link href="/signup" className="w-11/12">
-                  <button className="w-full px-4 py-2 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-base font-bold hover:bg-gray-800 transition cursor-pointer">Sign up</button>
-                </Link>
-              </>
-            )}
-          </div>
-        )}
       </nav>
+
+      {/* Mobile/Tablet Menu - Fixed positioning */}
+      {isClient && menuOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
+          
+          {/* Menu Content */}
+          <div className="mobile-menu-container fixed top-20 left-2 right-2 bg-white shadow-xl rounded-2xl flex flex-col py-6 gap-4 lg:hidden z-50 border border-gray-200 max-h-[80vh] overflow-y-auto">
+            
+            {/* Mobile Navigation Links */}
+            <div className="flex flex-col items-center gap-3 w-full px-4">
+              {navLinks.map((link) => (
+                <button
+                  key={link.name}
+                  onClick={() => handleLinkClick(link.href)}
+                  className="text-slate-950 text-lg font-semibold font-['Inter'] cursor-pointer hover:text-teal-700 transition px-4 py-3 rounded-lg hover:bg-teal-50 w-full text-center border-0 bg-transparent"
+                >
+                  {link.name}
+                </button>
+              ))}
+              {!loading && user && (
+                <button
+                  onClick={() => handleLinkClick('/admin')}
+                  className="text-slate-950 text-lg font-semibold font-['Inter'] cursor-pointer hover:text-teal-700 transition px-4 py-3 rounded-lg hover:bg-teal-50 w-full text-center border-0 bg-transparent"
+                >
+                  Admin
+                </button>
+              )}
+            </div>
+
+            {/* Mobile Search - Styled like desktop */}
+            <div className="w-full px-4 my-2">
+              <form
+                className="w-full"
+                onSubmit={handleSearchSubmit}
+                autoComplete="off"
+              >
+                <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[48px] w-full ring-1 ring-inset ring-gray-200 transition-all duration-200" style={{ backgroundColor: '#E8F3F3' }}>
+                  <input
+                    type="text"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    placeholder="What are you looking for?"
+                    className="flex-1 min-w-0 px-3 py-2 text-[#3A3546] text-sm placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none bg-[#E8F3F3] pointer-events-auto"
+                    style={{ fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)' }}
+                  />
+                  <div className="relative flex items-center">
+                    <select
+                      value={searchType}
+                      onChange={(e) => setSearchType(e.target.value)}
+                      className="appearance-none bg-transparent border-0 text-[#3A3546] text-sm font-medium pr-6 pl-2 py-2 h-8 focus:outline-none cursor-pointer min-w-[80px] font-inter-regular pointer-events-auto"
+                    >
+                      <option value="shots">Shots</option>
+                      <option value="blogs">Blogs</option>
+                      <option value="services">Services</option>
+                    </select>
+                    <svg
+                      className="pointer-events-none absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#3A3546]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none transform hover:scale-105 pointer-events-auto"
+                  >
+                    <MagnifyingGlassIcon className="h-4 w-4 text-white" />
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Mobile Auth Buttons */}
+            <div className="flex flex-col items-center gap-3 w-full px-4">
+              {loading ? null : user ? (
+                <button 
+                  onClick={() => { 
+                    setMenuOpen(false); 
+                    logout(); 
+                  }} 
+                  className="w-full px-4 py-3 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold hover:bg-gray-100 transition pointer-events-auto"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => handleLinkClick('/login')}
+                    className="w-full px-4 py-3 rounded-xl outline outline-1 outline-gray-900 bg-transparent text-slate-950 text-base font-bold hover:bg-gray-100 transition pointer-events-auto"
+                  >
+                    Log in
+                  </button>
+                  <button 
+                    onClick={() => handleLinkClick('/signup')}
+                    className="w-full px-4 py-3 rounded-xl outline outline-1 outline-gray-900 bg-gray-900 text-white text-base font-bold hover:bg-gray-800 transition cursor-pointer pointer-events-auto"
+                  >
+                    Sign up
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 };
 
-export default Navbar2; 
+export default Navbar2;
