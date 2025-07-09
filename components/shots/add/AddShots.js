@@ -140,6 +140,7 @@ const AddShots = () => {
       setDescription("");
       setUploadedImage(null);
       setErrors({});
+       router.push("/admin/shots");
     } catch (err) {
       setSubmitError("Error: " + err.message);
     } finally {

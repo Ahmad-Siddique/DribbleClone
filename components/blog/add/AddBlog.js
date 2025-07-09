@@ -173,6 +173,7 @@ const AddBlog = () => {
       setDescription("");
       setUploadedImage(null);
       setErrors({});
+       router.push("/admin/blogs");
     } catch (err) {
       setSubmitError("Error: " + err.message);
     } finally {

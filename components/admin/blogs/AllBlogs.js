@@ -72,7 +72,7 @@ export default function AllBlogsAdmin({
 
   // Handle create blogs button click
   const handleCreateBlogsClick = () => {
-    router.push("/blog/add");
+    router.push("/blogs/add");
   };
 
   // Keep local search state in sync with prop

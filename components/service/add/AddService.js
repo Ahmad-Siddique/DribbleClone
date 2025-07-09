@@ -181,6 +181,7 @@ const AddService = () => {
       setConcepts("");
       setDuration("");
       setErrors({});
+      router.push("/admin/services");
     } catch (err) {
       setSubmitError("Error: " + err.message);
     } finally {
