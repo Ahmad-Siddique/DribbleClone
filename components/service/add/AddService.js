@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/solid";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
+import { useRouter } from "next/navigation";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill-new"), {
@@ -35,6 +36,7 @@ const AddService = () => {
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const router = useRouter()
 
   // Handle tag input
   const handleTagKeyDown = (e) => {
