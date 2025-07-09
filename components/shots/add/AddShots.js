@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill-new"), {
