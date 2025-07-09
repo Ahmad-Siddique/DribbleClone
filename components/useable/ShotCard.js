@@ -66,13 +66,13 @@ const ShotCard = ({ shot, type }) => {
       {/* Shot Image */}
       <div className="relative w-full h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px] 2xl:h-[280px] bg-gray-100 overflow-hidden">
         <Image
-          src={shot.image}
-          alt={shot.title}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          priority
-        />
+    src={shot.image}
+    alt={shot.title}
+    fill
+    className="object-cover transition-transform duration-300 group-hover:scale-105 rounded-3xl"
+    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+    priority
+  />
         {/* Hover Overlay */}
         <div className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 to-transparent z-20 pointer-events-none">
           <div className="w-full flex items-center justify-between px-5 pb-4">

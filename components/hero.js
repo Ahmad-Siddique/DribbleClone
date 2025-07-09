@@ -52,57 +52,57 @@ export default function HeroSection() {
     }
   };
 
-  // Full-section dotted background style
+  // Single dotted background style for the whole section
   const sectionDotsBg = {
-    position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    backgroundImage: "radial-gradient(rgba(20,83,45,0.18) 7px, transparent 8px)",
-    backgroundSize: "44px 44px",
-    opacity: 0.45,
+    backgroundImage:
+      "radial-gradient(rgba(20,83,45,0.13) 7px, transparent 8px)",
+    backgroundSize: "48px 48px",
+    opacity: 0.35,
     pointerEvents: "none",
     zIndex: 1,
   };
 
   return (
     <section className="relative bg-white pt-20 pb-24 px-4 md:px-0 overflow-hidden min-h-[600px] flex items-center justify-center">
-      {/* Dotted background covering the entire section */}
-      <div aria-hidden="true" style={sectionDotsBg} />
+      {/* Full-section dotted background */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full"
+        style={sectionDotsBg}
+      />
 
       {/* Decorative blurred teal shapes */}
       <div className="absolute left-[-100px] top-[-100px] w-[340px] h-[340px] bg-teal-100 rounded-full blur-3xl opacity-20 z-10" />
       <div className="absolute right-[-120px] bottom-[-120px] w-[400px] h-[400px] bg-teal-200 rounded-full blur-3xl opacity-10 z-10" />
       <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[80vw] h-24 bg-gradient-to-r from-teal-50 via-white to-teal-50 blur-2xl opacity-40 z-10" />
 
-      {/* Main content */}
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-20 px-2">
         <h1
-          className="max-w-[900px] font-source-serif-semi text-[2.9rem] sm:text-[3.5rem] md:text-[4.3rem] lg:text-[4.375rem] leading-tight text-center mx-auto mb-8 break-words text-slate-950 drop-shadow-sm"
-          style={{ fontSize: '70px' }}
+          className="max-w-[900px] font-source-serif-semi text-[2rem] xs:text-[2.4rem] sm:text-[3.5rem] md:text-[4.3rem] lg:text-[4.375rem] leading-tight text-center mx-auto mb-8 break-words text-slate-950 drop-shadow-sm"
+          style={{ fontSize: 'clamp(2rem, 7vw, 70px)' }}
         >
           Discover the world's top
           <span
             className="text-teal-600 font-source-serif-semi ml-3"
-            style={{ fontSize: '70px' }}
+            style={{ fontSize: 'inherit' }}
           >
             designers
           </span>
         </h1>
-        <p className="font-inter-regular text-[18px] font-normal max-w-[650px] text-center text-gray-600 mb-10">
+        <p className="font-inter-regular text-[18px] font-normal max-w-[650px] text-center text-0D0C22-600 mb-10">
           Explore work from the most talented and accomplished designers ready to take on your next project.
         </p>
 
         {/* Search box */}
         <div className="relative w-full max-w-2xl mb-10 mt-2 flex justify-center items-center z-30">
           <form className="w-full relative z-10" onSubmit={handleSubmit}>
-            <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[56px] sm:h-[64px] overflow-hidden ring-1 ring-inset ring-gray-200 transition-all duration-200"
-              style={{ backgroundColor: '#E8F3F3' }}>
+            <div className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 py-2 h-[52px] sm:h-[68px] overflow-hidden ring-1 ring-inset ring-gray-200  transition-all duration-200"
+            style={{backgroundColor: '#E8F3F3'}}>
               <input
                 type="text"
                 placeholder="What are you looking for?"
-                className="flex-1 px-3 sm:px-5 py-2 sm:py-3 text-[#3A3546] text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
-                style={{ height: '44px', fontSize: '14px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
+                className="flex-1 px-2 sm:px-5 py-3 sm:py-5 text-[#3A3546] text-sm sm:text-base placeholder-[#3A3546] rounded-l-2xl font-inter-regular focus:outline-none"
+                style={{ height: '48px', fontSize: '15px', boxShadow: 'inset 0 1.5px 6px 0 rgba(20,83,45,0.04)', backgroundColor: '#E8F3F3' }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Search designers, jobs, inspiration"
@@ -110,8 +110,8 @@ export default function HeroSection() {
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
-                className="bg-transparent text-gray-900 text-base font-medium px-3 py-2 focus:outline-none transition h-8 sm:h-10 border-0 shadow-none rounded-none font-inter-regular"
-                style={{ minWidth: 90, fontSize: '14px' }}
+                className="bg-transparent text-gray-900 text-sm sm:text-base font-medium px-2 sm:px-3 py-3 sm:py-4 focus:outline-none transition h-12 sm:h-14 border-0 shadow-none rounded-none font-inter-regular"
+                style={{ minWidth: 70, fontSize: '15px' }}
                 aria-label="Search category"
               >
                 <option value="shots">Shots</option>
@@ -120,10 +120,10 @@ export default function HeroSection() {
               </select>
               <button
                 type="submit"
-                className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transform hover:scale-105"
+                className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black hover:bg-gray-800 transition-all duration-150 ml-2 cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transform hover:scale-105"
                 aria-label="Search"
               >
-                <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                <MagnifyingGlassIcon className="h-5 w-5 text-white" />
               </button>
             </div>
           </form>
@@ -135,9 +135,9 @@ export default function HeroSection() {
         >
           <span className="shrink-0 py-1">Trending Searches:</span>
           {[
-            { tag: "UI Design", color: "bg-teal-100 text-teal-700" },
+            { tag: "UI Design", color: "bg-gray-100 text-gray-700" },
             { tag: "Illustration", color: "bg-gray-100 text-gray-700" },
-            { tag: "Branding", color: "bg-teal-50 text-teal-800" },
+            { tag: "Branding", color: "bg-teal-50 text-gray-800" },
             { tag: "Web Design", color: "bg-white text-slate-950 border border-gray-200" },
             { tag: "App Design", color: "bg-gray-50 text-gray-800" },
           ].map(({ tag, color }) => (

@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         {/* <Navbar /> */}
         <AuthProvider>
           <Navbar2 />
-        <div className="h-30" />
+        <div className="h-20" />
         {children}
         </AuthProvider>
         <Footer />

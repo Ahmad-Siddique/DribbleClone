@@ -16,7 +16,7 @@ export default function HomePage({shots}) {
         <DribbbleFilterBar />
       </div> */}
       {/* <Test /> */}
-      <div className="mt-48">
+      <div className="mt-24">
         <ShotsSection shots={shots}/>
       </div>
       <Testimonial />
