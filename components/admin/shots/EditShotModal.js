@@ -84,7 +84,7 @@ export default function EditShotModal({ isOpen, onClose, shotId }) {
             setTitle(data.title || "");
             setTags(data.tags || []);
             setDescription(data.description || "");
-            setCategory(data.category || "");
+            // setCategory(data.category || "");
             setUploadedImage(
               data.mainImage ? { src: data.mainImage, file: null } : null
             );
@@ -111,7 +111,7 @@ export default function EditShotModal({ isOpen, onClose, shotId }) {
       setTags([]);
       setTagInput("");
       setDescription("");
-      setCategory("");
+      // setCategory("");
       setUploadedImage(null);
       setSuccessMessage("");
     }
@@ -354,7 +354,7 @@ export default function EditShotModal({ isOpen, onClose, shotId }) {
                   </div>
 
                   {/* Category Select Field */}
-                  <div className="w-full flex-1 flex flex-col gap-2">
+                  {/* <div className="w-full flex-1 flex flex-col gap-2">
                     <label className="text-gray-900 text-base font-medium font-['Inter']">
                       Category
                     </label>
@@ -373,7 +373,7 @@ export default function EditShotModal({ isOpen, onClose, shotId }) {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Tags Field */}

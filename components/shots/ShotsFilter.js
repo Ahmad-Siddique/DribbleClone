@@ -86,9 +86,14 @@ export default function ShotsFilter() {
       params.set("tags", newTags.join(","));
     }
 
-    if (newCategories.length > 0 && !newCategories.includes("Discover")) {
-      params.set("category", newCategories.join(","));
-    }
+    // if (newCategories.length > 0 && !newCategories.includes("Discover")) {
+    //   params.set("category", newCategories.join(","));
+    // }
+
+
+     if (newCategories.length > 0 ) {
+       params.set("category", newCategories.join(","));
+     }
 
     if (newView && newView !== "Popular") {
       params.set("view", newView);

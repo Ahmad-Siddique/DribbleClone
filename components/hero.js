@@ -94,11 +94,10 @@ export default function HeroSection() {
         </p>
 
         {/* Responsive Search box - Original horizontal design */}
-        {/* Responsive Search box - Original horizontal design */}
-<div className="relative w-full max-w-full sm:max-w-2xl mb-10 mt-2 flex justify-center items-center z-30 mx-0">
+  <div className="relative w-full max-w-full sm:max-w-2xl lg:max-w-3xl mb-10 mt-2 flex justify-center items-center z-30 mx-auto px-4 sm:px-6 lg:px-0">
   <form className="w-full max-w-full relative z-10" onSubmit={handleSubmit}>
     <div
-      className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-1 sm:px-2 py-1 sm:py-2 h-[52px] sm:h-[60px] overflow-hidden ring-1 ring-inset ring-gray-200 transition-all duration-200"
+      className="flex items-center border border-gray-400 rounded-2xl bg-white shadow-[0_2px_16px_0_rgba(20,83,45,0.06)] px-2 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 h-[52px] sm:h-[56px] lg:h-[60px] overflow-hidden ring-1 ring-inset ring-gray-200 transition-all duration-200"
       style={{ backgroundColor: '#E8F3F3' }}
     >
       <input
@@ -106,8 +105,8 @@ export default function HeroSection() {
         placeholder="What are you looking for?"
         className="
           flex-1 min-w-0
-          px-2 sm:px-4
-          py-2 sm:py-3
+          px-2 sm:px-3 lg:px-4
+          py-2 sm:py-2.5 lg:py-3
           text-[#3A3546]
           text-sm sm:text-base
           placeholder-[#3A3546]
@@ -133,16 +132,17 @@ export default function HeroSection() {
           text-sm sm:text-base
           font-medium
           px-2 sm:px-3
-          py-2 sm:py-3
+          py-2 sm:py-2.5 lg:py-3
           focus:outline-none
           transition
-          h-[44px] sm:h-[50px]
+          h-[44px] sm:h-[48px] lg:h-[50px]
           border-0
           shadow-none
           rounded-none
           font-inter-regular
+          shrink-0
         "
-        style={{ fontSize: '15px', minWidth: 70 }}
+        style={{ fontSize: '15px', minWidth: '70px' }}
         aria-label="Search category"
       >
         <option value="shots">Shots</option>
@@ -153,8 +153,8 @@ export default function HeroSection() {
         type="submit"
         className="
           flex items-center justify-center
-          w-10 sm:w-11
-          h-10 sm:h-11
+          w-10 sm:w-10.5 lg:w-11
+          h-10 sm:h-10.5 lg:h-11
           rounded-full
           bg-black hover:bg-gray-800
           transition-all duration-150
@@ -162,14 +162,16 @@ export default function HeroSection() {
           cursor-pointer shadow-lg
           focus:outline-none focus:ring-2 focus:ring-teal-400
           transform hover:scale-105
+          shrink-0
         "
         aria-label="Search"
       >
-        <MagnifyingGlassIcon className="h-5 w-5 text-white" />
+        <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
       </button>
     </div>
   </form>
 </div>
+
 
 
         <div
